@@ -7,3 +7,7 @@ Learn Micronaut - cloud native microservices with Java - Tutorial from Daniel Pr
 
 -  [Launch micronaut.io](https://micronaut.io/launch/)
 
+#####  8. Setup IDE
+
+For more advanced Micronaut Features
+-  Enable Annotation Processing
