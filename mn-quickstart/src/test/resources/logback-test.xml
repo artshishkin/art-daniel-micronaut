@@ -10,7 +10,9 @@
     </appender>
 
     <logger name="net.shyshkin.study" level="DEBUG"/>
+<!--    <logger name="io.micronaut.context.condition" level="DEBUG"/>-->
 
+<!--    <root level="debug">-->
     <root level="info">
         <appender-ref ref="STDOUT" />
     </root>
