@@ -1,5 +1,6 @@
 package net.shyshkin.study.micronaut.hello;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.client.HttpClient;
@@ -60,6 +61,25 @@ class HelloWorldControllerTest {
         assertEquals(expectedStatus, response.status());
         MediaType mediaType = response.getContentType().orElseThrow();
         assertEquals(MediaType.TEXT_PLAIN, mediaType.getName());
+    }
+
+    @Test
+    void translationEndpoint_shouldRespondWithProperStatusAndContent() {
+
+        //given
+        var expectedContent = "{\"de\":\"Hallo Welt\",\"en\":\"Hello World\"}";
+        var expectedStatus = HttpStatus.OK;
+
+        //when
+        var response = client.toBlocking().exchange("/hello/translation", JsonNode.class);
+
+        //then
+        JsonNode body = response.body();
+        assertEquals("Hello World", body.at("/en").textValue());
+        assertEquals("Hallo Welt", body.at("/de").textValue());
+        assertEquals(expectedStatus, response.status());
+        MediaType mediaType = response.getContentType().orElseThrow();
+        assertEquals(MediaType.APPLICATION_JSON, mediaType.getName());
     }
 
 }
