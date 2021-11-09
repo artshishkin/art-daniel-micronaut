@@ -1,3 +1,5 @@
 micronaut:
   application:
     name: mnQuickstart
+  server:
+    port: ${SERVER_PORT:8081}
