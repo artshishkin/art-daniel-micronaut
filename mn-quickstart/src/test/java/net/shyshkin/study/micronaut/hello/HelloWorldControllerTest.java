@@ -21,7 +21,7 @@ class HelloWorldControllerTest {
     void helloWorldEndpointRespondsWithProperContent() {
 
         //given
-        String expectedResponse = "Hello World Art";
+        String expectedResponse = "Hello from Service";
 
         //when
         String response = client.toBlocking().retrieve("/hello");
