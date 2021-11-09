@@ -1,6 +1,6 @@
 package net.shyshkin.study.micronaut.hello;
 
-import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Value;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
@@ -12,12 +12,14 @@ public class HelloWorldController {
 
     public static final Logger LOG = LoggerFactory.getLogger(HelloWorldController.class);
 
-    @Property(name = "hello.world.message")
-    private String helloFromConfig;
+    private final String helloFromConfig;
 
     private final MyService service;
 
-    public HelloWorldController(MyService service) {
+    public HelloWorldController(
+            @Value("${hello.world.message}") String helloFromConfig,
+            MyService service) {
+        this.helloFromConfig = helloFromConfig;
         this.service = service;
     }
 
