@@ -3,3 +3,7 @@ micronaut:
     name: mnQuickstart
   server:
     port: ${SERVER_PORT:8081}
+
+hello:
+  world:
+    message: "Hello from application.yml"

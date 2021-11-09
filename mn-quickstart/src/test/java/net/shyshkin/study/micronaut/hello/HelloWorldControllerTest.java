@@ -31,7 +31,7 @@ class HelloWorldControllerTest {
     }
 
     @Test
-    void helloWorldEndpointRespondsWithProperStatusAnd() {
+    void helloWorldEndpointRespondsWithProperStatusAndMediaType() {
 
         //given
         var expectedStatus = HttpStatus.OK;
@@ -44,4 +44,22 @@ class HelloWorldControllerTest {
         MediaType mediaType = response.getContentType().orElseThrow();
         assertEquals(MediaType.TEXT_PLAIN, mediaType.getName());
     }
+
+    @Test
+    void configEndpoint_shouldRespondWithProperStatusAndContent() {
+
+        //given
+        var expectedContent = "Hello from application.yml";
+        var expectedStatus = HttpStatus.OK;
+
+        //when
+        var response = client.toBlocking().exchange("/hello/config", String.class);
+
+        //then
+        assertEquals(expectedContent, response.body());
+        assertEquals(expectedStatus, response.status());
+        MediaType mediaType = response.getContentType().orElseThrow();
+        assertEquals(MediaType.TEXT_PLAIN, mediaType.getName());
+    }
+
 }
