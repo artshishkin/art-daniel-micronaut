@@ -43,7 +43,7 @@ class MarketsControllerTest {
     void marketsEndpoints_shouldReturnCorrectContentAt0Position() {
 
         //given
-        var expectedContent = "AAPL";
+        var expectedContent = "APPL";
 
         //when
         var response = client.toBlocking().exchange("/", JsonNode.class);
@@ -58,7 +58,7 @@ class MarketsControllerTest {
     void marketsEndpoints_shouldReturnCorrectJSON() {
 
         //given
-        var expectedContent = "[{\"value\":\"AAPL\"},{\"value\":\"AMZN\"},{\"value\":\"FB\"},{\"value\":\"GOOG\"},{\"value\":\"MSFT\"},{\"value\":\"NFLX\"},{\"value\":\"TSLA\"}]";
+        var expectedContent = "[{\"value\":\"APPL\"},{\"value\":\"AMZN\"},{\"value\":\"FB\"},{\"value\":\"GOOG\"},{\"value\":\"MSFT\"},{\"value\":\"NFLX\"},{\"value\":\"TSLA\"}]";
 
         //when
         var response = client.toBlocking().exchange("/", JsonNode.class);
@@ -89,7 +89,7 @@ class MarketsControllerTest {
 
         //given
         var expectedSize = 7;
-        var expectedSymbols = new String[]{"AAPL", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "TSLA"};
+        var expectedSymbols = new String[]{"APPL", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "TSLA"};
 
         //when
         var response = client.toBlocking().exchange("/", Symbol[].class);
@@ -110,7 +110,7 @@ class MarketsControllerTest {
 
         //given
         var expectedSize = 7;
-        var expectedSymbols = new String[]{"AAPL", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "TSLA"};
+        var expectedSymbols = new String[]{"APPL", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "TSLA"};
 
         //when
         var result = client.toBlocking().retrieve("/", List.class);
