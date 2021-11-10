@@ -10,7 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
-import java.util.stream.Stream;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -99,9 +100,27 @@ class MarketsControllerTest {
                 .satisfies(resp -> assertThat(resp.getContentType()).hasValue(MediaType.APPLICATION_JSON_TYPE))
                 .satisfies(resp -> assertThat(resp.body())
                         .hasSize(expectedSize)
-                        .satisfies(symbols -> assertThat(Stream.of(symbols).map(Symbol::getValue))
-                                .containsExactlyInAnyOrder(expectedSymbols))
+                        .extracting("value")
+                        .containsExactlyInAnyOrder(expectedSymbols)
                 );
+    }
+
+    @Test
+    void marketsEndpoints_shouldReturnAllSymbols_retrieve() {
+
+        //given
+        var expectedSize = 7;
+        var expectedSymbols = new String[]{"AAPL", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "TSLA"};
+
+        //when
+        var result = client.toBlocking().retrieve("/", List.class);
+
+        //then
+        final List<LinkedHashMap<String, String>> markets = result;
+        assertThat(markets)
+                .hasSize(expectedSize)
+                .extracting(entry -> entry.get("value"))
+                .containsExactlyInAnyOrder(expectedSymbols);
     }
 
 }
