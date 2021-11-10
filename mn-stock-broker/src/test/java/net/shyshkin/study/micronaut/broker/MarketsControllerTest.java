@@ -10,7 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
@@ -79,6 +81,27 @@ class MarketsControllerTest {
         var body = response.body();
         log.debug("{}", body);
         assertEquals(expectedSize, body.length);
+    }
+
+    @Test
+    void marketsEndpoints_shouldReturnAllSymbols_fullTest() {
+
+        //given
+        var expectedSize = 7;
+        var expectedSymbols = new String[]{"AAPL", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "TSLA"};
+
+        //when
+        var response = client.toBlocking().exchange("/", Symbol[].class);
+
+        //then
+        assertThat(response)
+                .hasFieldOrPropertyWithValue("status", HttpStatus.OK)
+                .satisfies(resp -> assertThat(resp.getContentType()).hasValue(MediaType.APPLICATION_JSON_TYPE))
+                .satisfies(resp -> assertThat(resp.body())
+                        .hasSize(expectedSize)
+                        .satisfies(symbols -> assertThat(Stream.of(symbols).map(Symbol::getValue))
+                                .containsExactlyInAnyOrder(expectedSymbols))
+                );
     }
 
 }
