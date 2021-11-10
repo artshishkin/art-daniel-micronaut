@@ -15,8 +15,10 @@ public class QuotesController {
 
     @Get(uri = "/{symbol}")
     public HttpResponse<Quote> quotes(@PathVariable(name = "symbol") String symbol) {
-        var quote = this.store.fetchQuote(symbol);
-        return HttpResponse.ok(quote);
+        return this.store
+                .fetchQuote(symbol)
+                .map(HttpResponse::ok)
+                .orElse(HttpResponse.noContent());
     }
 
 }

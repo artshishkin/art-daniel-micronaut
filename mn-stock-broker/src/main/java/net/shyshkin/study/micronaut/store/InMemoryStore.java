@@ -6,7 +6,10 @@ import net.shyshkin.study.micronaut.broker.Symbol;
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,22 +18,33 @@ import java.util.stream.Stream;
 public class InMemoryStore {
 
     private List<Symbol> symbols;
+    private final Map<String, Quote> cachedQuotes = new HashMap<>();
     private final ThreadLocalRandom current = ThreadLocalRandom.current();
 
     @PostConstruct
     void init() {
-        this.symbols = Stream.of("AAPL", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "TSLA")
+        this.symbols = Stream.of("APPL", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "TSLA")
                 .map(Symbol::new)
                 .collect(Collectors.toList());
+
+        this.symbols.forEach(symbol -> cachedQuotes.put(symbol.getValue(), randomQuote(symbol)));
     }
 
     public List<Symbol> getAllSymbols() {
         return symbols;
     }
 
-    public Quote fetchQuote(final String symbol) {
+    public Optional<Quote> fetchQuote(final String symbol) {
+        return Optional.ofNullable(this.cachedQuotes.get(symbol));
+    }
+
+    public void updateQuote(final Quote quote) {
+        this.cachedQuotes.put(quote.getSymbol().getValue(), quote);
+    }
+
+    private Quote randomQuote(Symbol symbol) {
         return Quote.builder()
-                .symbol(new Symbol(symbol))
+                .symbol(symbol)
                 .bid(randomValue())
                 .ask(randomValue())
                 .lastPrice(randomValue())
