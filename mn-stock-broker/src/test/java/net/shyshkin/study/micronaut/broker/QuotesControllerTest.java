@@ -7,8 +7,10 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
+import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.micronaut.broker.error.CustomError;
 import net.shyshkin.study.micronaut.store.InMemoryStore;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +20,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static io.micronaut.http.HttpRequest.GET;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 @MicronautTest
@@ -75,16 +79,37 @@ class QuotesControllerTest {
     void returnQuotePerSymbol_absent() throws JsonProcessingException {
 
         //given
-        var expectedSymbol = "NO_QUOTE";
+        var expectedSymbol = "UNSUPPORTED";
 
         //when
-        var response = client.toBlocking().exchange("/quotes/" + expectedSymbol);
+        try {
 
-        //then
-        log.debug("{}", objectMapper.writeValueAsString(response));
-        assertThat(response)
-                .hasFieldOrPropertyWithValue("status", HttpStatus.NO_CONTENT);
-        assertThat(response.body()).isNull();
+            client.toBlocking().retrieve("/quotes/" + expectedSymbol,
+                    Quote.class,
+                    CustomError.class);
+
+        } catch (HttpClientResponseException e) {
+            log.debug("{}", this.objectMapper.writeValueAsString(e.getResponse()));
+            log.debug("{}", e.getResponse().getBody(CustomError.class));
+            assertEquals(HttpStatus.NOT_FOUND, e.getResponse().status());
+            assertThat(e.getResponse().getContentType()).hasValue(MediaType.APPLICATION_JSON_TYPE);
+            assertThat(e.getResponse().getBody(CustomError.class))
+                    .hasValueSatisfying(customError -> assertAll(
+                            () -> assertThat(customError.getStatus()).isEqualTo(404),
+                            () -> assertThat(customError.getPath()).isEqualTo("/quotes/UNSUPPORTED"),
+                            () -> assertThat(customError.getError()).isEqualTo("NOT_FOUND"),
+                            () -> assertThat(customError.getMessage()).isEqualTo("quote for symbol not available")
+                    ));
+            //alternative
+            assertThat(e.getResponse().getBody(CustomError.class))
+                    .hasValueSatisfying(customError ->
+                            assertThat(customError)
+                                    .hasFieldOrPropertyWithValue("status", 404)
+                                    .hasFieldOrPropertyWithValue("path", "/quotes/UNSUPPORTED")
+                                    .hasFieldOrPropertyWithValue("error", "NOT_FOUND")
+                                    .hasFieldOrPropertyWithValue("message", "quote for symbol not available")
+                    );
+        }
     }
 
     @Test
