@@ -3,11 +3,14 @@ package net.shyshkin.study.micronaut.broker.account;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.http.HttpRequest;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.reactivex.Single;
+import io.reactivex.observers.TestObserver;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.micronaut.broker.Symbol;
 import net.shyshkin.study.micronaut.broker.model.WatchList;
@@ -20,6 +23,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -47,9 +51,11 @@ class WatchListControllerReactiveTest {
     void get_absent() throws JsonProcessingException {
 
         //when
-        var response = client.toBlocking().exchange("/", WatchList.class);
+        var exchange = client.exchange("/", WatchList.class);
 
         //then
+        Single<HttpResponse<WatchList>> result = exchange.singleOrError();
+        HttpResponse<WatchList> response = result.blockingGet();
         log.debug("{}", objectMapper.writeValueAsString(response));
         assertThat(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.OK)
@@ -60,17 +66,28 @@ class WatchListControllerReactiveTest {
 
     @Test
     @Order(30)
-    void get_present() throws JsonProcessingException {
+    void get_present() throws JsonProcessingException, InterruptedException {
 
         //given
         update();
         String[] symbolValues = new String[]{"NFLX", "TSLA"};
+        TestObserver<HttpResponse<WatchList>> observer = new TestObserver<>();
 
         //when
-        var response = client.toBlocking().exchange("/", WatchList.class);
+        client.exchange("/", WatchList.class)
+
+                .singleOrError()
+                .doOnEvent((resp, err) -> log.debug("{}", objectMapper.writeValueAsString(resp)))
+                .subscribe(observer);
 
         //then
-        log.debug("{}", objectMapper.writeValueAsString(response));
+        observer.awaitTerminalEvent(1, TimeUnit.SECONDS);
+        observer
+                .assertComplete()
+                .assertNoErrors()
+                .assertValueCount(1);
+
+        HttpResponse<WatchList> response = observer.values().get(0);
         assertThat(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.OK)
                 .satisfies(resp -> assertThat(resp.getContentType()).hasValue(MediaType.APPLICATION_JSON_TYPE));
@@ -90,7 +107,10 @@ class WatchListControllerReactiveTest {
         WatchList watchList = new WatchList(symbols);
 
         //when
-        var response = client.toBlocking().exchange(HttpRequest.PUT("/", watchList), WatchList.class);
+        var response = client
+                .exchange(HttpRequest.PUT("/", watchList), WatchList.class)
+                .singleOrError()
+                .blockingGet();
 
         //then
         log.debug("{}", objectMapper.writeValueAsString(response));
