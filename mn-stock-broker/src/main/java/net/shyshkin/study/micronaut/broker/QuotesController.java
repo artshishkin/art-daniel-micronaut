@@ -2,9 +2,14 @@ package net.shyshkin.study.micronaut.broker;
 
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.micronaut.broker.error.CustomError;
 import net.shyshkin.study.micronaut.store.InMemoryStore;
@@ -17,6 +22,10 @@ public class QuotesController {
 
     private final InMemoryStore store;
 
+    @Operation(summary = "Returns a quote for a given symbol.")
+    @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON))
+    @ApiResponse(responseCode = "404", description = "Invalid symbol specified")
+    @Tag(name = "quotes")
     @Get(uri = "/{symbol}")
     public HttpResponse<?> quotes(@PathVariable(name = "symbol") String symbol) {
 
