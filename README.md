@@ -11,3 +11,14 @@ Learn Micronaut - cloud native microservices with Java - Tutorial from Daniel Pr
 
 For more advanced Micronaut Features
 -  Enable Annotation Processing
+
+####  Section 4: Micronaut Web
+
+#####  35. Open API and Swagger
+
+-  `http://localhost:8080/swagger/mn-stock-broker-0.0.yml` - specification
+-  `http://localhost:8080/swagger-ui` - specification
+-  `http://localhost:8080/redoc` - redoc
+-  `http://localhost:8080/rapidoc` - rapidoc
+
+

@@ -81,6 +81,11 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-annotations</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>runtime</scope>
@@ -128,8 +133,15 @@
               <artifactId>micronaut-validation</artifactId>
               <version>${micronaut.version}</version>
             </path>
+              <path>
+                  <groupId>io.micronaut.openapi</groupId>
+                  <artifactId>micronaut-openapi</artifactId>
+                  <version>${micronaut.openapi.version}</version>
+              </path>
           </annotationProcessorPaths>
+          <fork>true</fork>
           <compilerArgs>
+            <arg>-J-Dmicronaut.openapi.views.spec=redoc.enabled=true,rapidoc.enabled=true,swagger-ui.enabled=true,swagger-ui.theme=flattop</arg>
             <arg>-Amicronaut.processing.group=net.shyshkin.study.micronaut</arg>
             <arg>-Amicronaut.processing.module=mn-stock-broker</arg>
           </compilerArgs>
