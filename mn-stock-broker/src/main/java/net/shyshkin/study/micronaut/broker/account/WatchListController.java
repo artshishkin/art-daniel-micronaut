@@ -3,6 +3,8 @@ package net.shyshkin.study.micronaut.broker.account;
 
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.micronaut.broker.model.WatchList;
@@ -12,6 +14,7 @@ import java.util.UUID;
 
 import static io.micronaut.http.MediaType.APPLICATION_JSON;
 
+@Secured(SecurityRule.IS_AUTHENTICATED)
 @Slf4j
 @Controller("/account/watchlist")
 @RequiredArgsConstructor
