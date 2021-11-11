@@ -10,3 +10,21 @@ hello:
     translation:
       de: "Hallo Welt"
       en: "Hello World"
+
+# JSON Settings
+jackson:
+  property-naming-strategy: SNAKE_CASE
+  serialization:
+    writeDatesAsTimestamps: false
+    writeDatesWithZoneId: true
+    WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS: false
+  deserialization:
+    FAIL_ON_UNKNOWN_PROPERTIES: false
+  generator:
+    WRITE_BIGDECIMAL_AS_PLAIN: true
+    WRITE_NUMBERS_AS_STRINGS: true
+
+
+
+
+

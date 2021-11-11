@@ -1,16 +1,19 @@
 package net.shyshkin.study.micronaut.hello;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Slf4j
 @MicronautTest
 class HelloWorldControllerTest {
 
@@ -80,6 +83,26 @@ class HelloWorldControllerTest {
         assertEquals(expectedStatus, response.status());
         MediaType mediaType = response.getContentType().orElseThrow();
         assertEquals(MediaType.APPLICATION_JSON, mediaType.getName());
+    }
+
+    @Test
+    void returnGreetingAsJson_ObjectNode() {
+
+        //when
+        var result = client.toBlocking().retrieve("/hello/json", ObjectNode.class);
+
+        //then
+        log.debug("{}", result);
+    }
+
+    @Test
+    void returnGreetingAsJson_String() {
+
+        //when
+        var result = client.toBlocking().retrieve("/hello/json", String.class);
+
+        //then
+        log.debug("{}", result);
     }
 
 }
