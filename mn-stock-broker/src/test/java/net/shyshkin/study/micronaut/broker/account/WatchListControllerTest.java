@@ -7,6 +7,7 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
+import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.security.authentication.UsernamePasswordCredentials;
 import io.micronaut.security.token.jwt.render.BearerAccessRefreshToken;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.micronaut.broker.Symbol;
 import net.shyshkin.study.micronaut.broker.model.WatchList;
 import net.shyshkin.study.micronaut.store.AccountStore;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,9 @@ import java.util.stream.Stream;
 import static io.micronaut.http.HttpRequest.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
 @MicronautTest
@@ -45,6 +50,37 @@ class WatchListControllerTest {
     AccountStore store;
 
     private static String globalAccessToken = null;
+
+    @Test
+    @Order(5)
+    void unauthorizedAccess_shouldBeForbidden() {
+
+        MutableHttpRequest<Object> request = GET(ACCOUNT_WATCHLIST);
+        try {
+            client.toBlocking().retrieve(request);
+            fail("Should fail if no exception is thrown");
+        } catch (HttpClientResponseException exc) {
+            assertEquals(HttpStatus.UNAUTHORIZED, exc.getStatus());
+            assertEquals("Unauthorized", exc.getMessage());
+        }
+    }
+
+    @Test
+    @Order(6)
+    void unauthorizedAccess_shouldBeForbidden_withThrow() {
+
+        MutableHttpRequest<Object> request = GET(ACCOUNT_WATCHLIST);
+        ThrowableAssert.ThrowingCallable exec = () -> {
+            client.toBlocking().retrieve(request);
+        };
+
+        assertThatThrownBy(exec)
+                .isInstanceOf(HttpClientResponseException.class)
+                .satisfies((exc) -> {
+                    assertEquals(HttpStatus.UNAUTHORIZED, ((HttpClientResponseException) exc).getStatus());
+                    assertEquals("Unauthorized", exc.getMessage());
+                });
+    }
 
     @Test
     @Order(10)
