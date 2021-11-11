@@ -19,6 +19,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -66,7 +68,7 @@ class WatchListControllerReactiveTest {
 
     @Test
     @Order(30)
-    void get_present() throws JsonProcessingException, InterruptedException {
+    void get_present() throws JsonProcessingException {
 
         //given
         update();
@@ -75,6 +77,40 @@ class WatchListControllerReactiveTest {
 
         //when
         client.exchange("/", WatchList.class)
+
+                .singleOrError()
+                .doOnEvent((resp, err) -> log.debug("{}", objectMapper.writeValueAsString(resp)))
+                .subscribe(observer);
+
+        //then
+        observer.awaitTerminalEvent(1, TimeUnit.SECONDS);
+        observer
+                .assertComplete()
+                .assertNoErrors()
+                .assertValueCount(1);
+
+        HttpResponse<WatchList> response = observer.values().get(0);
+        assertThat(response)
+                .hasFieldOrPropertyWithValue("status", HttpStatus.OK)
+                .satisfies(resp -> assertThat(resp.getContentType()).hasValue(MediaType.APPLICATION_JSON_TYPE));
+        assertThat(response.body().getSymbols())
+                .extracting(Symbol::getValue)
+                .containsExactlyInAnyOrder(symbolValues);
+
+    }
+
+    @Order(32)
+    @ParameterizedTest
+    @ValueSource(strings = {"/single", "/flowable"})
+    void getAsSingleOrFlowable(String uri) throws JsonProcessingException {
+
+        //given
+        update();
+        String[] symbolValues = new String[]{"NFLX", "TSLA"};
+        TestObserver<HttpResponse<WatchList>> observer = new TestObserver<>();
+
+        //when
+        client.exchange(uri, WatchList.class)
 
                 .singleOrError()
                 .doOnEvent((resp, err) -> log.debug("{}", objectMapper.writeValueAsString(resp)))
