@@ -2,12 +2,14 @@ package net.shyshkin.study.micronaut.broker.account;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
+import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
+import io.micronaut.security.authentication.UsernamePasswordCredentials;
+import io.micronaut.security.token.jwt.render.BearerAccessRefreshToken;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
@@ -28,6 +30,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import static io.micronaut.http.HttpRequest.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,9 +40,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 class WatchListControllerReactiveTest {
 
     private static final UUID TEST_ACCOUNT_ID = WatchListControllerReactive.ACCOUNT_ID;
+    public static final String ACCOUNT_WATCHLIST_REACTIVE = "/account/watchlist-reactive";
+    private static String globalAccessToken = null;
 
     @Inject
-    @Client("/account/watchlist-reactive")
+    @Client("/")
     RxHttpClient client;
 
     @Inject
@@ -52,8 +57,12 @@ class WatchListControllerReactiveTest {
     @Order(10)
     void get_absent() throws JsonProcessingException {
 
+        //given
+        var accessToken = getAccessToken();
+
         //when
-        var exchange = client.exchange("/", WatchList.class);
+        var request = GET(ACCOUNT_WATCHLIST_REACTIVE).bearerAuth(accessToken);
+        var exchange = client.exchange(request, WatchList.class);
 
         //then
         Single<HttpResponse<WatchList>> result = exchange.singleOrError();
@@ -71,12 +80,15 @@ class WatchListControllerReactiveTest {
     void get_present() throws JsonProcessingException {
 
         //given
+        var accessToken = getAccessToken();
+
         update();
         String[] symbolValues = new String[]{"NFLX", "TSLA"};
         TestObserver<HttpResponse<WatchList>> observer = new TestObserver<>();
 
         //when
-        client.exchange("/", WatchList.class)
+        var request = GET(ACCOUNT_WATCHLIST_REACTIVE).bearerAuth(accessToken);
+        client.exchange(request, WatchList.class)
 
                 .singleOrError()
                 .doOnEvent((resp, err) -> log.debug("{}", objectMapper.writeValueAsString(resp)))
@@ -105,12 +117,15 @@ class WatchListControllerReactiveTest {
     void getAsSingleOrFlowable(String uri) throws JsonProcessingException {
 
         //given
+        var accessToken = getAccessToken();
+
         update();
         String[] symbolValues = new String[]{"NFLX", "TSLA"};
         TestObserver<HttpResponse<WatchList>> observer = new TestObserver<>();
 
         //when
-        client.exchange(uri, WatchList.class)
+        var request = GET(ACCOUNT_WATCHLIST_REACTIVE + uri).bearerAuth(accessToken);
+        client.exchange(request, WatchList.class)
 
                 .singleOrError()
                 .doOnEvent((resp, err) -> log.debug("{}", objectMapper.writeValueAsString(resp)))
@@ -137,14 +152,18 @@ class WatchListControllerReactiveTest {
     @Order(20)
     void update() throws JsonProcessingException {
         //given
+        var accessToken = getAccessToken();
+
         String[] symbolValues = new String[]{"NFLX", "TSLA"};
         List<Symbol> symbols = Stream.of(symbolValues).map(Symbol::new).collect(toList());
 
         WatchList watchList = new WatchList(symbols);
 
         //when
+
+        var put = PUT(ACCOUNT_WATCHLIST_REACTIVE, watchList).bearerAuth(accessToken);
         var response = client
-                .exchange(HttpRequest.PUT("/", watchList), WatchList.class)
+                .exchange(put, WatchList.class)
                 .singleOrError()
                 .blockingGet();
 
@@ -163,17 +182,41 @@ class WatchListControllerReactiveTest {
     void delete() throws JsonProcessingException {
 
         //given
+        var accessToken = getAccessToken();
+
         update();
         UUID accountId = TEST_ACCOUNT_ID;
         assertThat(store.getWatchList(accountId).getSymbols()).isNotNull();
 
         //when
-        var response = client.toBlocking().exchange(HttpRequest.DELETE("/" + accountId), WatchList.class);
+        var request = DELETE(ACCOUNT_WATCHLIST_REACTIVE + "/" + accountId).bearerAuth(accessToken);
+        var response = client.toBlocking().exchange(request, WatchList.class);
 
         //then
         assertThat(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.NO_CONTENT);
         assertThat(response.body()).isNull();
         assertThat(store.getWatchList(accountId).getSymbols()).isNull();
+    }
+
+    private String getAccessToken() {
+
+        if (globalAccessToken == null) {
+            var credentials = new UsernamePasswordCredentials("my-user", "secret");
+            MutableHttpRequest<Object> login = POST("/login", credentials);
+//        var httpResponse = client.toBlocking().exchange(login, ObjectNode.class);
+            var httpResponse = client.toBlocking().exchange(login, BearerAccessRefreshToken.class);
+            try {
+                log.debug("{}", objectMapper.writeValueAsString(httpResponse));
+                log.debug("{}", objectMapper.writeValueAsString(httpResponse.body()));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            var token = httpResponse.body();
+            assertThat(token).isNotNull();
+            assertThat(token.getUsername()).isEqualTo("my-user");
+            globalAccessToken = token.getAccessToken();
+        }
+        return globalAccessToken;
     }
 }
