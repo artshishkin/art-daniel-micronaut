@@ -1,0 +1,27 @@
+version: "3"
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=art
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=mn-stock-broker
+    volumes:
+      - postgres-data-mn-stock-broker:/var/lib/postgresql/data
+    ports:
+      - 6432:5432
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@shyshkin.net
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    volumes:
+      - pgadmin-data-mn-stock-broker:/var/lib/pgadmin
+    ports:
+      - 9000:80
+volumes:
+  postgres-data-mn-stock-broker:
+  pgadmin-data-mn-stock-broker:
+
