@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
-import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.security.authentication.UsernamePasswordCredentials;
-import io.micronaut.security.token.jwt.render.BearerAccessRefreshToken;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
@@ -46,6 +44,10 @@ class WatchListControllerReactiveTest {
     @Inject
     @Client("/")
     RxHttpClient client;
+
+    @Inject
+    @Client("/")
+    JwtWatchListClient loginClient;
 
     @Inject
     ObjectMapper objectMapper;
@@ -203,16 +205,7 @@ class WatchListControllerReactiveTest {
 
         if (globalAccessToken == null) {
             var credentials = new UsernamePasswordCredentials("my-user", "secret");
-            MutableHttpRequest<Object> login = POST("/login", credentials);
-//        var httpResponse = client.toBlocking().exchange(login, ObjectNode.class);
-            var httpResponse = client.toBlocking().exchange(login, BearerAccessRefreshToken.class);
-            try {
-                log.debug("{}", objectMapper.writeValueAsString(httpResponse));
-                log.debug("{}", objectMapper.writeValueAsString(httpResponse.body()));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-            var token = httpResponse.body();
+            var token = this.loginClient.login(credentials);
             assertThat(token).isNotNull();
             assertThat(token.getUsername()).isEqualTo("my-user");
             globalAccessToken = token.getAccessToken();
