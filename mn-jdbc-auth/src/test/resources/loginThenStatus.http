@@ -1,0 +1,13 @@
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "username": "art.user@example.com",
+  "password": "superSecretPassword"
+}
+
+> {% client.global.set("auth_token", response.body.access_token); %}
+
+###
+GET http://localhost:8080/secured/status
+Authorization: Bearer {{auth_token}}
