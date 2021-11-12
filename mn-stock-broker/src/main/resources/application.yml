@@ -33,3 +33,20 @@ flyway:
       password: ${PG_PASSWORD:secret}
       schemas: mn
       default-schema: mn
+datasources:
+  default:
+    url: ${PG_JDBC_URL:`jdbc:postgresql://localhost:6432/mn-stock-broker`}
+    driverClassName: org.postgresql.Driver
+    username: ${PG_USERNAME:art}
+    password: ${PG_PASSWORD:secret}
+    schema-generate: NONE
+    dialect: POSTGRES
+# micronaut-data-jpa
+jpa:
+  default:
+    properties:
+      hibernate:
+        show_sql: false
+        hbm2ddl.auto: none
+    packages-to-scan:
+      - "net.shyshkin.study.micronaut.broker.persistence"
