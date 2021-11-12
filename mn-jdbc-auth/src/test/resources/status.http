@@ -1,3 +1,6 @@
+### Unauthorized
+GET http://localhost:8080/secured/status
+
 ###
 GET http://localhost:8080/secured/status
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhcnQudXNlckBleGFtcGxlLmNvbSIsIm5iZiI6MTYzNjcxNTQ4Nywicm9sZXMiOltdLCJpc3MiOiJtbi1qZGJjLWF1dGgiLCJleHAiOjE2MzY3MTkwODcsImlhdCI6MTYzNjcxNTQ4N30.vMP5rHmzzQbVB0d04H2iqWn6UD5weOniNu3vX_OenAw

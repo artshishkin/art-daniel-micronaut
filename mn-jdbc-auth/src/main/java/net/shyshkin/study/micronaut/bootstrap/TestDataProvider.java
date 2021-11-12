@@ -2,11 +2,12 @@ package net.shyshkin.study.micronaut.bootstrap;
 
 import io.micronaut.context.event.StartupEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
-import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.micronaut.auth.persistence.UserEntity;
 import net.shyshkin.study.micronaut.auth.persistence.UserRepository;
+
+import javax.inject.Singleton;
 
 @Slf4j
 @Singleton

@@ -1,3 +1,26 @@
+### Unauthorized Correct
+POST http://localhost:8080/login
+Content-Type: application/json
+
+### Incorrect username
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "username": "art.incorrect@example.com",
+  "password": "superSecretPassword"
+}
+
+### Incorrect password
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "username": "art.user@example.com",
+  "password": "wrongPassword"
+}
+
+### Correct
 POST http://localhost:8080/login
 Content-Type: application/json
 
