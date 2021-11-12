@@ -47,7 +47,7 @@ class WatchListControllerReactiveTest {
 
     @Inject
     @Client("/")
-    JwtWatchListClient loginClient;
+    JwtWatchListClient jwtClient;
 
     @Inject
     ObjectMapper objectMapper;
@@ -57,14 +57,13 @@ class WatchListControllerReactiveTest {
 
     @Test
     @Order(10)
-    void get_absent() throws JsonProcessingException {
+    void get_absent_exchange() throws JsonProcessingException {
 
         //given
         var accessToken = getAccessToken();
 
         //when
-        var request = GET(ACCOUNT_WATCHLIST_REACTIVE).bearerAuth(accessToken);
-        var exchange = client.exchange(request, WatchList.class);
+        var exchange = jwtClient.exchangeWatchList("Bearer " + accessToken);
 
         //then
         Single<HttpResponse<WatchList>> result = exchange.singleOrError();
@@ -78,8 +77,26 @@ class WatchListControllerReactiveTest {
     }
 
     @Test
+    @Order(10)
+    void get_absent_retrieve() throws JsonProcessingException {
+
+        //given
+        var accessToken = getAccessToken();
+
+        //when
+        Single<WatchList> result = jwtClient
+                .retrieveWatchList("Bearer " + accessToken)
+                .singleOrError();
+
+        //then
+        WatchList watchList = result.blockingGet();
+        log.debug("{}", objectMapper.writeValueAsString(watchList));
+        assertThat(watchList).hasAllNullFieldsOrProperties();
+    }
+
+    @Test
     @Order(30)
-    void get_present() throws JsonProcessingException {
+    void get_present_exchange() throws JsonProcessingException {
 
         //given
         var accessToken = getAccessToken();
@@ -89,8 +106,7 @@ class WatchListControllerReactiveTest {
         TestObserver<HttpResponse<WatchList>> observer = new TestObserver<>();
 
         //when
-        var request = GET(ACCOUNT_WATCHLIST_REACTIVE).bearerAuth(accessToken);
-        client.exchange(request, WatchList.class)
+        jwtClient.exchangeWatchList("Bearer " + accessToken)
 
                 .singleOrError()
                 .doOnEvent((resp, err) -> log.debug("{}", objectMapper.writeValueAsString(resp)))
@@ -108,6 +124,38 @@ class WatchListControllerReactiveTest {
                 .hasFieldOrPropertyWithValue("status", HttpStatus.OK)
                 .satisfies(resp -> assertThat(resp.getContentType()).hasValue(MediaType.APPLICATION_JSON_TYPE));
         assertThat(response.body().getSymbols())
+                .extracting(Symbol::getValue)
+                .containsExactlyInAnyOrder(symbolValues);
+
+    }
+
+    @Test
+    @Order(31)
+    void get_present_retrieve() throws JsonProcessingException {
+
+        //given
+        var accessToken = getAccessToken();
+
+        update();
+        String[] symbolValues = new String[]{"NFLX", "TSLA"};
+        TestObserver<WatchList> observer = new TestObserver<>();
+
+        //when
+        jwtClient.retrieveWatchList("Bearer " + accessToken)
+
+                .singleOrError()
+                .doOnEvent((watchList, err) -> log.debug("{}", objectMapper.writeValueAsString(watchList)))
+                .subscribe(observer);
+
+        //then
+        observer.awaitTerminalEvent(1, TimeUnit.SECONDS);
+        observer
+                .assertComplete()
+                .assertNoErrors()
+                .assertValueCount(1);
+
+        WatchList watchList = observer.values().get(0);
+        assertThat(watchList.getSymbols())
                 .extracting(Symbol::getValue)
                 .containsExactlyInAnyOrder(symbolValues);
 
@@ -205,7 +253,7 @@ class WatchListControllerReactiveTest {
 
         if (globalAccessToken == null) {
             var credentials = new UsernamePasswordCredentials("my-user", "secret");
-            var token = this.loginClient.login(credentials);
+            var token = this.jwtClient.login(credentials);
             assertThat(token).isNotNull();
             assertThat(token.getUsername()).isEqualTo("my-user");
             globalAccessToken = token.getAccessToken();
