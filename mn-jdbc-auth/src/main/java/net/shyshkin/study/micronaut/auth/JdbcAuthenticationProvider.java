@@ -12,6 +12,7 @@ import net.shyshkin.study.micronaut.auth.persistence.UserRepository;
 import org.reactivestreams.Publisher;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -34,7 +35,16 @@ public class JdbcAuthenticationProvider implements AuthenticationProvider {
                 log.debug("Found user: {}", user.getEmail());
                 if (user.getPassword().equals(secret)) {
                     log.debug("User logged in.");
-                    emitter.onNext(AuthenticationResponse.success(user.getEmail(), List.of("ROLE_USER")));
+                    Map<String, Object> attributes = Map.of(
+                            "hair_color", "brown",
+                            "language", "en"
+                    );
+                    emitter.onNext(
+                            AuthenticationResponse.success(
+                                    user.getEmail(),
+                                    List.of("ROLE_USER"),
+                                    attributes)
+                    );
                     emitter.onComplete();
                     return;
                 } else {
