@@ -23,3 +23,13 @@ micronaut:
           secret:
             generator:
               secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:secretIsStoredInEnvironmentVariables}"'
+flyway:
+  datasources:
+    default:
+      enabled: true
+      clean-schema: false
+      url: ${PG_JDBC_URL:`jdbc:postgresql://localhost:6432/mn-stock-broker`}
+      user: ${PG_USERNAME:art}
+      password: ${PG_PASSWORD:secret}
+      schemas: mn
+      default-schema: mn
