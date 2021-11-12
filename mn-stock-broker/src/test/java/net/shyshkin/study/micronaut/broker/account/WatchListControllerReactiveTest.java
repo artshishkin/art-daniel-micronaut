@@ -11,6 +11,7 @@ import io.micronaut.security.authentication.UsernamePasswordCredentials;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
+import io.reactivex.subscribers.TestSubscriber;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.micronaut.broker.Symbol;
 import net.shyshkin.study.micronaut.broker.model.WatchList;
@@ -19,8 +20,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -28,7 +27,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-import static io.micronaut.http.HttpRequest.*;
+import static io.micronaut.http.HttpRequest.DELETE;
+import static io.micronaut.http.HttpRequest.PUT;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -162,9 +162,8 @@ class WatchListControllerReactiveTest {
     }
 
     @Order(32)
-    @ParameterizedTest
-    @ValueSource(strings = {"/single", "/flowable"})
-    void getAsSingleOrFlowable(String uri) throws JsonProcessingException {
+    @Test
+    void getAsSingle_exchange() throws JsonProcessingException {
 
         //given
         var accessToken = getAccessToken();
@@ -174,10 +173,8 @@ class WatchListControllerReactiveTest {
         TestObserver<HttpResponse<WatchList>> observer = new TestObserver<>();
 
         //when
-        var request = GET(ACCOUNT_WATCHLIST_REACTIVE + uri).bearerAuth(accessToken);
-        client.exchange(request, WatchList.class)
+        jwtClient.exchangeWatchListAsSingle("Bearer " + accessToken)
 
-                .singleOrError()
                 .doOnEvent((resp, err) -> log.debug("{}", objectMapper.writeValueAsString(resp)))
                 .subscribe(observer);
 
@@ -196,6 +193,99 @@ class WatchListControllerReactiveTest {
                 .extracting(Symbol::getValue)
                 .containsExactlyInAnyOrder(symbolValues);
 
+    }
+
+    @Order(33)
+    @Test
+    void getAsSingle_retrieve() throws JsonProcessingException {
+
+        //given
+        var accessToken = getAccessToken();
+
+        update();
+        String[] symbolValues = new String[]{"NFLX", "TSLA"};
+        TestObserver<WatchList> observer = new TestObserver<>();
+
+        //when
+        jwtClient.retrieveWatchListAsSingle("Bearer " + accessToken)
+
+                .doOnEvent((resp, err) -> log.debug("{}", objectMapper.writeValueAsString(resp)))
+                .subscribe(observer);
+
+        //then
+        observer.awaitTerminalEvent(1, TimeUnit.SECONDS);
+        observer
+                .assertComplete()
+                .assertNoErrors()
+                .assertValueCount(1);
+
+        WatchList response = observer.values().get(0);
+        assertThat(response.getSymbols())
+                .extracting(Symbol::getValue)
+                .containsExactlyInAnyOrder(symbolValues);
+    }
+
+    @Order(36)
+    @Test
+    void getAsFlowable_exchange() throws JsonProcessingException {
+
+        //given
+        var accessToken = getAccessToken();
+
+        update();
+        String[] symbolValues = new String[]{"NFLX", "TSLA"};
+        TestSubscriber<HttpResponse<WatchList>> subscriber = new TestSubscriber<>();
+
+        //when
+        jwtClient.exchangeWatchListAsFlowable("Bearer " + accessToken)
+
+                .doOnEach(resp -> log.debug("{}", objectMapper.writeValueAsString(resp)))
+                .subscribe(subscriber);
+
+        //then
+        subscriber.awaitTerminalEvent(1, TimeUnit.SECONDS);
+        subscriber
+                .assertComplete()
+                .assertNoErrors()
+                .assertValueCount(1);
+
+        HttpResponse<WatchList> response = subscriber.values().get(0);
+        assertThat(response)
+                .hasFieldOrPropertyWithValue("status", HttpStatus.OK)
+                .satisfies(resp -> assertThat(resp.getContentType()).hasValue(MediaType.APPLICATION_JSON_TYPE));
+        assertThat(response.body().getSymbols())
+                .extracting(Symbol::getValue)
+                .containsExactlyInAnyOrder(symbolValues);
+    }
+
+    @Order(36)
+    @Test
+    void getAsFlowable_retrieve() throws JsonProcessingException {
+
+        //given
+        var accessToken = getAccessToken();
+
+        update();
+        String[] symbolValues = new String[]{"NFLX", "TSLA"};
+        TestSubscriber<WatchList> subscriber = new TestSubscriber<>();
+
+        //when
+        jwtClient.retrieveWatchListAsFlowable("Bearer " + accessToken)
+
+                .doOnEach(resp -> log.debug("{}", objectMapper.writeValueAsString(resp)))
+                .subscribe(subscriber);
+
+        //then
+        subscriber.awaitTerminalEvent(1, TimeUnit.SECONDS);
+        subscriber
+                .assertComplete()
+                .assertNoErrors()
+                .assertValueCount(1);
+
+        WatchList response = subscriber.values().get(0);
+        assertThat(response.getSymbols())
+                .extracting(Symbol::getValue)
+                .containsExactlyInAnyOrder(symbolValues);
     }
 
     @Test
