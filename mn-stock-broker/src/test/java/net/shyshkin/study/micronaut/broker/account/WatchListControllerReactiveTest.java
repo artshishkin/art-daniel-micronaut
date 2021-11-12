@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
-import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.security.authentication.UsernamePasswordCredentials;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -27,7 +26,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-import static io.micronaut.http.HttpRequest.DELETE;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,10 +37,6 @@ class WatchListControllerReactiveTest {
     private static final UUID TEST_ACCOUNT_ID = WatchListControllerReactive.ACCOUNT_ID;
     public static final String ACCOUNT_WATCHLIST_REACTIVE = "/account/watchlist-reactive";
     private static String globalAccessToken = null;
-
-    @Inject
-    @Client("/")
-    RxHttpClient client;
 
     @Inject
     @Client("/")
@@ -324,8 +318,7 @@ class WatchListControllerReactiveTest {
         assertThat(store.getWatchList(accountId).getSymbols()).isNotNull();
 
         //when
-        var request = DELETE(ACCOUNT_WATCHLIST_REACTIVE + "/" + accountId).bearerAuth(accessToken);
-        var response = client.toBlocking().exchange(request, WatchList.class);
+        var response = jwtClient.deleteWatchList("Bearer " + accessToken, accountId);
 
         //then
         assertThat(response)

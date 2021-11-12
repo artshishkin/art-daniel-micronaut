@@ -9,6 +9,8 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import net.shyshkin.study.micronaut.broker.model.WatchList;
 
+import java.util.UUID;
+
 @Client("/")
 public interface JwtWatchListClient {
 
@@ -37,5 +39,8 @@ public interface JwtWatchListClient {
 
     @Put(ACCOUNT_WATCHLIST_REACTIVE)
     Single<HttpResponse<WatchList>> updateWatchList(@Header String authorization, @Body WatchList watchList);
+
+    @Delete(ACCOUNT_WATCHLIST_REACTIVE + "/{accountId}")
+    HttpResponse<?> deleteWatchList(@Header String authorization, @PathVariable UUID accountId);
 
 }
