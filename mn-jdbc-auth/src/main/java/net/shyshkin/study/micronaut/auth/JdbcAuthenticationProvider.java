@@ -11,6 +11,7 @@ import net.shyshkin.study.micronaut.auth.persistence.UserEntity;
 import net.shyshkin.study.micronaut.auth.persistence.UserRepository;
 import org.reactivestreams.Publisher;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -33,7 +34,7 @@ public class JdbcAuthenticationProvider implements AuthenticationProvider {
                 log.debug("Found user: {}", user.getEmail());
                 if (user.getPassword().equals(secret)) {
                     log.debug("User logged in.");
-                    emitter.onNext(AuthenticationResponse.success(user.getEmail()));
+                    emitter.onNext(AuthenticationResponse.success(user.getEmail(), List.of("ROLE_USER")));
                     emitter.onComplete();
                     return;
                 } else {
