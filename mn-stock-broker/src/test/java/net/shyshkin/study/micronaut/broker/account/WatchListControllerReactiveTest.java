@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static io.micronaut.http.HttpRequest.DELETE;
-import static io.micronaut.http.HttpRequest.PUT;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -300,11 +299,7 @@ class WatchListControllerReactiveTest {
         WatchList watchList = new WatchList(symbols);
 
         //when
-
-        var put = PUT(ACCOUNT_WATCHLIST_REACTIVE, watchList).bearerAuth(accessToken);
-        var response = client
-                .exchange(put, WatchList.class)
-                .singleOrError()
+        var response = jwtClient.updateWatchList("Bearer " + accessToken, watchList)
                 .blockingGet();
 
         //then
