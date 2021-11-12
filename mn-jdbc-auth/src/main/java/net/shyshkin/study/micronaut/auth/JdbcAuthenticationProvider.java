@@ -1,17 +1,17 @@
 package net.shyshkin.study.micronaut.auth;
 
 import io.micronaut.http.HttpRequest;
-import io.micronaut.security.authentication.*;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
+import io.micronaut.security.authentication.AuthenticationProvider;
+import io.micronaut.security.authentication.AuthenticationRequest;
+import io.micronaut.security.authentication.AuthenticationResponse;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.shyshkin.study.micronaut.auth.persistence.UserEntity;
 import net.shyshkin.study.micronaut.auth.persistence.UserRepository;
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
 
-import java.util.Optional;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,24 +25,10 @@ public class JdbcAuthenticationProvider implements AuthenticationProvider {
         String identity = (String) authenticationRequest.getIdentity();
         Object secret = authenticationRequest.getSecret();
         log.debug("User {} tries to login ...", identity);
-        return Flowable.create(emitter -> {
 
-            Optional<UserEntity> maybeUser = repository.findByEmail(identity);
-            if (maybeUser.isPresent()) {
-                UserEntity user = maybeUser.get();
-                log.debug("Found user: {}", user.getEmail());
-                if (user.getPassword().equals(secret)) {
-                    log.debug("User logged in.");
-                    emitter.onNext(AuthenticationResponse.success(user.getEmail()));
-                    emitter.onComplete();
-                    return;
-                } else {
-                    log.debug("Wrong password provided for user: {}", identity);
-                }
-            } else {
-                log.debug("No user found with email: {}", identity);
-            }
-            emitter.onError(new AuthenticationException(new AuthenticationFailed("Wrong username or password")));
-        }, BackpressureStrategy.ERROR);
+        return Mono.justOrEmpty(repository.findByEmail(identity))
+                .filter(user -> Objects.equals(user.getPassword(), secret))
+                .map(user -> AuthenticationResponse.success(user.getEmail()))
+                .switchIfEmpty(Mono.just(AuthenticationResponse.failure("Wrong username or password")));
     }
 }
