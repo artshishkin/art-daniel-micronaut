@@ -1,6 +1,8 @@
 package net.shyshkin.study.micronaut.broker.persistence.jpa;
 
 import io.micronaut.data.annotation.Repository;
+import io.micronaut.data.model.Pageable;
+import io.micronaut.data.model.Slice;
 import io.micronaut.data.repository.CrudRepository;
 import net.shyshkin.study.micronaut.broker.persistence.model.QuoteDto;
 import net.shyshkin.study.micronaut.broker.persistence.model.QuoteEntity;
@@ -27,4 +29,8 @@ public interface QuotesRepository extends CrudRepository<QuoteEntity, Long> {
     // Filter
     List<QuoteDto> findByVolumeGreaterThanOrderByVolumeDesc(BigDecimal volume);
 
+    // Pagination
+    List<QuoteDto> findByVolumeGreaterThan(BigDecimal volume, Pageable pageable);
+
+    Slice<QuoteDto> list(Pageable pageable);
 }

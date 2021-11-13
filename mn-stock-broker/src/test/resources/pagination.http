@@ -1,0 +1,21 @@
+###
+GET http://localhost:8080/quotes/jpa/pagination?volume=30&page=0
+
+###
+GET http://localhost:8080/quotes/jpa/pagination?volume=30&page=1
+
+###
+GET http://localhost:8080/quotes/jpa/pagination
+
+###
+GET http://localhost:8080/quotes/jpa/pagination?page=1
+
+###
+GET http://localhost:8080/quotes/jpa/pagination/slice
+
+###
+GET http://localhost:8080/quotes/jpa/pagination/slice?size=3&page=1&sort=volume,DESC
+
+###
+GET http://localhost:8080/quotes/jpa/pagination/slice?size=error&page=fake&sort=volume,DESC
+

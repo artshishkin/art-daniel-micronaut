@@ -1,5 +1,7 @@
 package net.shyshkin.study.micronaut.broker;
 
+import io.micronaut.data.model.Pageable;
+import io.micronaut.data.model.Slice;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
@@ -126,6 +128,19 @@ public class QuotesController {
     public List<QuoteDto> filterByVolume(@QueryValue(defaultValue = "0") BigDecimal minVolume) {
         log.debug("filterByVolume({}) invoked", minVolume);
         return this.quotesRepository.findByVolumeGreaterThanOrderByVolumeDesc(minVolume);
+    }
+
+    @Get(uri = "/jpa/pagination{?page,volume}")
+    public List<QuoteDto> volumeFilterPagination(@QueryValue Optional<Integer> page, @QueryValue(defaultValue = "0") BigDecimal volume) {
+        Pageable pageable = page
+                .map(Pageable::from)
+                .orElse(Pageable.unpaged());
+        return this.quotesRepository.findByVolumeGreaterThan(volume, pageable);
+    }
+
+    @Get(uri = "/jpa/pagination/slice")
+    public Slice<QuoteDto> pagination(Pageable pageable) {
+        return this.quotesRepository.list(pageable);
     }
 
 }
