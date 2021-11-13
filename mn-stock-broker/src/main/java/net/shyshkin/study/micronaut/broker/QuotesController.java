@@ -98,5 +98,20 @@ public class QuotesController {
         return HttpResponse.ok(quoteMaybe.get());
     }
 
+    @Operation(summary = "List all the quotes ordered by volumes descending. Fetched from the database via JPA.")
+    @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON))
+    @Tag(name = "quotes")
+    @Get("/jpa/ordered/desc")
+    public List<QuoteEntity> listOrderByVolumeDesc() {
+        return this.quotesRepository.listOrderByVolumeDesc();
+    }
+
+    @Operation(summary = "List all the quotes ordered by volumes ascending. Fetched from the database via JPA.")
+    @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON))
+    @Tag(name = "quotes")
+    @Get("/jpa/ordered/asc")
+    public List<QuoteEntity> listOrderByVolumeAsc() {
+        return this.quotesRepository.listOrderByVolumeAsc();
+    }
 
 }

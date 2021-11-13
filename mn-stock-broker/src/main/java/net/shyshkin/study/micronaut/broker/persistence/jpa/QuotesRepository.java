@@ -18,4 +18,8 @@ public interface QuotesRepository extends CrudRepository<QuoteEntity, Long> {
 
     Optional<QuoteEntity> findOneBySymbol(SymbolEntity symbol);
 
+    List<QuoteEntity> listOrderByVolumeDesc();
+
+    List<QuoteEntity> listOrderByVolumeAsc();
+
 }
