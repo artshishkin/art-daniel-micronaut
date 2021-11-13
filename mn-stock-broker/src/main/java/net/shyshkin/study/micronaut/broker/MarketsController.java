@@ -11,8 +11,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import net.shyshkin.study.micronaut.broker.persistence.jpa.SymbolEntity;
 import net.shyshkin.study.micronaut.broker.persistence.jpa.SymbolsRepository;
+import net.shyshkin.study.micronaut.broker.persistence.model.SymbolEntity;
 import net.shyshkin.study.micronaut.store.InMemoryStore;
 
 import java.util.List;

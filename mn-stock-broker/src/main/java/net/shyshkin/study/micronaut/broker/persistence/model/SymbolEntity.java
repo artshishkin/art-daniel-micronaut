@@ -1,4 +1,4 @@
-package net.shyshkin.study.micronaut.broker.persistence.jpa;
+package net.shyshkin.study.micronaut.broker.persistence.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

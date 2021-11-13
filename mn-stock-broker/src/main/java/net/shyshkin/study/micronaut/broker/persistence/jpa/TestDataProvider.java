@@ -5,6 +5,7 @@ import io.micronaut.context.env.Environment;
 import io.micronaut.context.event.StartupEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
 import lombok.RequiredArgsConstructor;
+import net.shyshkin.study.micronaut.broker.persistence.model.SymbolEntity;
 
 import javax.inject.Singleton;
 import java.util.stream.Collectors;
