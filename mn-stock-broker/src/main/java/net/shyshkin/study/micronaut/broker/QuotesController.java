@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.micronaut.broker.error.CustomError;
 import net.shyshkin.study.micronaut.broker.persistence.jpa.QuotesRepository;
 import net.shyshkin.study.micronaut.broker.persistence.model.QuoteEntity;
+import net.shyshkin.study.micronaut.broker.persistence.model.SymbolEntity;
 import net.shyshkin.study.micronaut.store.InMemoryStore;
 
 import java.util.List;
@@ -76,5 +77,26 @@ public class QuotesController {
         }
         return HttpResponse.ok(quotes);
     }
+
+    @Operation(summary = "Returns a quote for a given symbol. Fetched from the database via JPA. Using SymbolEntity")
+    @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON))
+    @ApiResponse(responseCode = "404", description = "Invalid symbol specified")
+    @Tag(name = "quotes")
+    @Get(uri = "/jpa/entity/{symbol}")
+    public HttpResponse<?> getQuoteViaJpaBySymbolEntity(@PathVariable(name = "symbol") String symbol) {
+
+        final Optional<QuoteEntity> quoteMaybe = this.quotesRepository.findOneBySymbol(new SymbolEntity(symbol));
+        if (quoteMaybe.isEmpty()) {
+            CustomError customError = CustomError.builder()
+                    .status(HttpStatus.NOT_FOUND.getCode())
+                    .error(HttpStatus.NOT_FOUND.name())
+                    .message("quote for symbol not available in db")
+                    .path("/quotes/jpa/entity/" + symbol)
+                    .build();
+            return HttpResponse.notFound(customError);
+        }
+        return HttpResponse.ok(quoteMaybe.get());
+    }
+
 
 }
