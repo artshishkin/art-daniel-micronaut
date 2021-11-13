@@ -57,4 +57,24 @@ public class QuotesController {
         return this.quotesRepository.findAll();
     }
 
+    @Operation(summary = "Returns a quote for a given symbol. Fetched from the database via JPA.")
+    @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON))
+    @ApiResponse(responseCode = "404", description = "Invalid symbol specified")
+    @Tag(name = "quotes")
+    @Get(uri = "/jpa/{symbol}")
+    public HttpResponse<?> getQuoteViaJpa(@PathVariable(name = "symbol") String symbol) {
+
+        final List<QuoteEntity> quotes = this.quotesRepository.findAllBySymbolValue(symbol);
+        if (quotes.isEmpty()) {
+            CustomError customError = CustomError.builder()
+                    .status(HttpStatus.NOT_FOUND.getCode())
+                    .error(HttpStatus.NOT_FOUND.name())
+                    .message("quote for symbol not available in db")
+                    .path("/quotes/jpa/" + symbol)
+                    .build();
+            return HttpResponse.notFound(customError);
+        }
+        return HttpResponse.ok(quotes);
+    }
+
 }

@@ -12,4 +12,6 @@ public interface QuotesRepository extends CrudRepository<QuoteEntity, Long> {
     @Override
     List<QuoteEntity> findAll();
 
+    List<QuoteEntity> findAllBySymbolValue(String symbol);
+
 }
