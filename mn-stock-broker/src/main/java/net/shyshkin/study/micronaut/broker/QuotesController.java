@@ -14,8 +14,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.micronaut.broker.error.CustomError;
+import net.shyshkin.study.micronaut.broker.persistence.jpa.QuotesRepository;
+import net.shyshkin.study.micronaut.broker.persistence.model.QuoteEntity;
 import net.shyshkin.study.micronaut.store.InMemoryStore;
 
+import java.util.List;
 import java.util.Optional;
 
 @Secured(SecurityRule.IS_ANONYMOUS)
@@ -24,6 +27,7 @@ import java.util.Optional;
 public class QuotesController {
 
     private final InMemoryStore store;
+    private final QuotesRepository quotesRepository;
 
     @Operation(summary = "Returns a quote for a given symbol.")
     @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON))
@@ -43,6 +47,14 @@ public class QuotesController {
             return HttpResponse.notFound(customError);
         }
         return HttpResponse.ok(quoteOptional.get());
+    }
+
+    @Operation(summary = "Returns all the quotes. Fetched from the database via JPA.")
+    @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON))
+    @Tag(name = "quotes")
+    @Get("/jpa")
+    public List<QuoteEntity> getAllQuotesViaJpa() {
+        return this.quotesRepository.findAll();
     }
 
 }
