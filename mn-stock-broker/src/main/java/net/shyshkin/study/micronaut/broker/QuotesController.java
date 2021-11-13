@@ -6,6 +6,7 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
+import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.micronaut.broker.error.CustomError;
 import net.shyshkin.study.micronaut.broker.persistence.jpa.QuotesRepository;
 import net.shyshkin.study.micronaut.broker.persistence.model.QuoteDto;
@@ -20,9 +22,11 @@ import net.shyshkin.study.micronaut.broker.persistence.model.QuoteEntity;
 import net.shyshkin.study.micronaut.broker.persistence.model.SymbolEntity;
 import net.shyshkin.study.micronaut.store.InMemoryStore;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Secured(SecurityRule.IS_ANONYMOUS)
 @Controller("/quotes")
 @RequiredArgsConstructor
@@ -113,6 +117,15 @@ public class QuotesController {
     @Get("/jpa/ordered/asc")
     public List<QuoteDto> listOrderByVolumeAsc() {
         return this.quotesRepository.listOrderByVolumeAsc();
+    }
+
+    @Operation(summary = "List all the quotes with volume greater then ...")
+    @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON))
+    @Tag(name = "quotes")
+    @Get(uri = "/jpa/filter")
+    public List<QuoteDto> filterByVolume(@QueryValue(defaultValue = "0") BigDecimal minVolume) {
+        log.debug("filterByVolume({}) invoked", minVolume);
+        return this.quotesRepository.findByVolumeGreaterThanOrderByVolumeDesc(minVolume);
     }
 
 }
