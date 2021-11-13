@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.micronaut.broker.error.CustomError;
 import net.shyshkin.study.micronaut.broker.persistence.jpa.QuotesRepository;
+import net.shyshkin.study.micronaut.broker.persistence.model.QuoteDto;
 import net.shyshkin.study.micronaut.broker.persistence.model.QuoteEntity;
 import net.shyshkin.study.micronaut.broker.persistence.model.SymbolEntity;
 import net.shyshkin.study.micronaut.store.InMemoryStore;
@@ -102,7 +103,7 @@ public class QuotesController {
     @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON))
     @Tag(name = "quotes")
     @Get("/jpa/ordered/desc")
-    public List<QuoteEntity> listOrderByVolumeDesc() {
+    public List<QuoteDto> listOrderByVolumeDesc() {
         return this.quotesRepository.listOrderByVolumeDesc();
     }
 
@@ -110,7 +111,7 @@ public class QuotesController {
     @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON))
     @Tag(name = "quotes")
     @Get("/jpa/ordered/asc")
-    public List<QuoteEntity> listOrderByVolumeAsc() {
+    public List<QuoteDto> listOrderByVolumeAsc() {
         return this.quotesRepository.listOrderByVolumeAsc();
     }
 

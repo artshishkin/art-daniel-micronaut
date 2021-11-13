@@ -2,6 +2,7 @@ package net.shyshkin.study.micronaut.broker.persistence.jpa;
 
 import io.micronaut.data.annotation.Repository;
 import io.micronaut.data.repository.CrudRepository;
+import net.shyshkin.study.micronaut.broker.persistence.model.QuoteDto;
 import net.shyshkin.study.micronaut.broker.persistence.model.QuoteEntity;
 import net.shyshkin.study.micronaut.broker.persistence.model.SymbolEntity;
 
@@ -18,8 +19,8 @@ public interface QuotesRepository extends CrudRepository<QuoteEntity, Long> {
 
     Optional<QuoteEntity> findOneBySymbol(SymbolEntity symbol);
 
-    List<QuoteEntity> listOrderByVolumeDesc();
+    List<QuoteDto> listOrderByVolumeDesc();
 
-    List<QuoteEntity> listOrderByVolumeAsc();
+    List<QuoteDto> listOrderByVolumeAsc();
 
 }
