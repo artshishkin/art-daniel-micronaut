@@ -5,7 +5,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     <include file="changelog/01-create-balances-table.xml" relativeToChangelogFile="true"/>
-<!--    versioning-->
-<!--    <include file="changelog/02-another-change.xml" relativeToChangelogFile="true"/>   -->
+    <include file="changelog/02-create-transaction-log-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

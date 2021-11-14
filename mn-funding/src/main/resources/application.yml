@@ -13,5 +13,5 @@ liquibase:
   datasources:
     default:
       enabled: true
-      drop-first: true
+      drop-first: false
       change-log: 'classpath:db/liquibase-changelog.xml'
