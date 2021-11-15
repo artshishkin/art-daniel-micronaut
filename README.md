@@ -21,4 +21,12 @@ For more advanced Micronaut Features
 -  `http://localhost:8080/redoc` - redoc
 -  `http://localhost:8080/rapidoc` - rapidoc
 
+####  Section 8: Using Web Sockets
+
+#####  64. Web Socket Server
+
+WebSocket in browser
+-  extension for Chrome - Smart Websocket Client
+-  **or** 
+-  [https://websocketking.com/](https://websocketking.com/)
 
