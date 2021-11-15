@@ -2,3 +2,7 @@ micronaut:
   application:
     name: mnPricing
 kafka.bootstrap.servers: localhost:9092
+kafka:
+  consumers:
+    external-quote-consumer:
+      auto.offset.reset: latest

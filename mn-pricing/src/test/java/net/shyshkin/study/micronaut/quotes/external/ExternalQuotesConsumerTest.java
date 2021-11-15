@@ -45,6 +45,7 @@ class ExternalQuotesConsumerTest {
         context = ApplicationContext.run(
                 Map.of(
                         "kafka.bootstrap.servers", KAFKA.getBootstrapServers(),
+                        "kafka.consumers.external-quote-consumer.auto.offset.reset", "earliest",
                         PROPERTY_NAME, true
                 ),
                 Environment.TEST);
