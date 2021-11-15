@@ -32,6 +32,8 @@ dependencies {
     // TestContainers
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:kafka")
+
+    testImplementation("org.awaitility:awaitility:4.0.2")
 }
 
 

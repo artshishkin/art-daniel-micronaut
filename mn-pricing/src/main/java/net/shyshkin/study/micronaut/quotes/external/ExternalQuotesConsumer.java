@@ -30,8 +30,10 @@ public class ExternalQuotesConsumer {
                 .collect(Collectors.toList());
         priceUpdateProducer
                 .send(priceUpdates)
-                .doOnError(e -> log.error("Failed to produce:", e.getCause()))
-                .forEach(meta -> log.debug("Record sent tot topic {} at offset {}", meta.topic(), meta.offset()));
+                .subscribe(
+                        meta -> log.debug("Record sent tot topic {} at offset {}", meta.topic(), meta.offset()),
+                        e -> log.error("Failed to produce:", e)
+                );
     }
 
     private PriceUpdate toPriceUpdate(ExternalQuote externalQuote) {

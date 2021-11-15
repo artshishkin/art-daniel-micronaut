@@ -1,5 +1,7 @@
 package net.shyshkin.study.micronaut;
 
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.env.Environment;
 import io.micronaut.scheduling.annotation.Scheduled;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Singleton
+@Requires(notEnv = Environment.TEST)
 @RequiredArgsConstructor
 public class EventScheduler {
 
