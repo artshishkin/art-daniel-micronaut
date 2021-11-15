@@ -1,6 +1,7 @@
 package net.shyshkin.study.micronaut.quotes.external;
 
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
+import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,8 @@ import java.util.stream.Collectors;
 @KafkaListener(
         clientId = "mn-pricing-external-quote-consumer",
         groupId = "external-quote-consumer",
-        batch = true
+        batch = true,
+        offsetReset = OffsetReset.EARLIEST
 )
 @RequiredArgsConstructor
 public class ExternalQuotesConsumer {
