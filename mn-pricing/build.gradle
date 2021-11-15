@@ -29,6 +29,9 @@ dependencies {
 
     testImplementation("io.micronaut:micronaut-http-client")
 
+    // TestContainers
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:kafka")
 }
 
 
