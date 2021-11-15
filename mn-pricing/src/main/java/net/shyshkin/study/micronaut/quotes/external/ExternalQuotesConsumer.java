@@ -1,12 +1,13 @@
 package net.shyshkin.study.micronaut.quotes.external;
 
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
-import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
+import io.micronaut.context.annotation.Property;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.micronaut.price.PriceUpdate;
 import net.shyshkin.study.micronaut.price.PriceUpdateProducer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
         clientId = "mn-pricing-external-quote-consumer",
         groupId = "external-quote-consumer",
         batch = true,
-        offsetReset = OffsetReset.EARLIEST
+        properties = @Property(name = ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, value = "earliest")
 )
 @RequiredArgsConstructor
 public class ExternalQuotesConsumer {
