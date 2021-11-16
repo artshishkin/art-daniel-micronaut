@@ -5,6 +5,7 @@ import io.micronaut.websocket.annotation.ClientWebSocket;
 import io.micronaut.websocket.annotation.OnClose;
 import io.micronaut.websocket.annotation.OnMessage;
 import io.micronaut.websocket.annotation.OnOpen;
+import io.reactivex.Single;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -40,4 +41,7 @@ public abstract class SimpleWebSocketClient implements AutoCloseable {
     }
 
     public abstract void send(String message);
+
+    public abstract Single<String> sendReactive(String message);
+
 }

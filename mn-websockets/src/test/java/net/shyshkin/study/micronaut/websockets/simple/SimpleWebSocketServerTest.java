@@ -37,7 +37,7 @@ class SimpleWebSocketServerTest {
     }
 
     @Test
-    void canReceiveMessagesWithClient() throws InterruptedException {
+    void canReceiveMessagesWithClient() {
 
         //when
         webSocketClient.send("Hello");
@@ -53,6 +53,28 @@ class SimpleWebSocketServerTest {
                     List<String> observedMessages = new ArrayList<>(messages);
                     assertEquals("Connected!", observedMessages.get(0));
                     assertEquals("Not supported(Hello)", observedMessages.get(1));
+
+                });
+    }
+
+    @Test
+    void canSendReactively() {
+
+        //when
+        String result = webSocketClient.sendReactive("Reactive").blockingGet();
+
+        //then
+        log.debug("Sent {}", result);
+        await()
+                .atMost(1, TimeUnit.SECONDS)
+                .untilAsserted(() -> {
+
+                    Collection<String> messages = webSocketClient.getObservedMessages();
+                    log.debug("Observed messages {} - {}", messages.size(), messages);
+                    assertTrue(messages.size() >= 2);
+                    List<String> observedMessages = new ArrayList<>(messages);
+                    assertEquals("Connected!", observedMessages.get(0));
+                    assertEquals("Not supported(Reactive)", observedMessages.get(1));
 
                 });
     }
