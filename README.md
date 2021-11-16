@@ -30,3 +30,12 @@ WebSocket in browser
 -  **or** 
 -  [https://websocketking.com/](https://websocketking.com/)
 
+####  Section 9: GraalVM - Native Image
+
+#####  67.4 Docker Image Build Commands
+
+-  `./gradlew clean assemble` - rebuild the project and package JAR
+-  `docker build . -t artarkatesoft/mn-pricing`
+
+
+
