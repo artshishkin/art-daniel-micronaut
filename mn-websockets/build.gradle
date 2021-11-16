@@ -27,7 +27,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("ch.qos.logback:logback-classic")
     implementation("io.micronaut:micronaut-validation")
-
+    testImplementation('org.awaitility:awaitility:3.0.0')
 }
 
 
