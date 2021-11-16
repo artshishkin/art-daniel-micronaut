@@ -32,10 +32,18 @@ WebSocket in browser
 
 ####  Section 9: GraalVM - Native Image
 
-#####  67.4 Docker Image Build Commands
+#####  67.5 Docker Image Build Commands
 
 -  `./gradlew clean assemble` - rebuild the project and package JAR
 -  `docker build . -t artarkatesoft/mn-pricing`
+
+#####  67.6 Docker Stack Deploy (by Daniel)
+
+As Kafka runs on the host machine the stack must be attached to the correct host network, so the access to kafka works.
+-  `docker stack deploy -c app.stack.yml mn-pricing-stack`
+-  will not work - because my docker is not in Swarm mode
+
+
 
 
 
