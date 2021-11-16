@@ -4,6 +4,7 @@ import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.websocket.RxWebSocketClient;
 import net.shyshkin.study.micronaut.websockets.client.SimpleWebSocketClient;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,28 +27,33 @@ class SimpleWebSocketServerTest {
     @Inject
     @Client("http://localhost:8180")
     RxWebSocketClient client;
+    private SimpleWebSocketClient webSocketClient;
+
+    @BeforeEach
+    void connect() {
+        webSocketClient = client
+                .connect(SimpleWebSocketClient.class, "/ws/simple/prices")
+                .blockingFirst();
+    }
 
     @Test
     void canReceiveMessagesWithClient() throws InterruptedException {
-        //given
 
         //when
-        SimpleWebSocketClient simpleWebSocketClient = client
-                .connect(SimpleWebSocketClient.class, "/ws/simple/prices")
-                .blockingFirst();
-        simpleWebSocketClient.send("Hello");
+        webSocketClient.send("Hello");
 
         //then
-
-        Collection<String> messages = simpleWebSocketClient.getObservedMessages();
         await()
                 .atMost(1, TimeUnit.SECONDS)
                 .untilAsserted(() -> {
+
+                    Collection<String> messages = webSocketClient.getObservedMessages();
                     log.debug("Observed messages {} - {}", messages.size(), messages);
                     assertTrue(messages.size() >= 2);
                     List<String> observedMessages = new ArrayList<>(messages);
                     assertEquals("Connected!", observedMessages.get(0));
                     assertEquals("Not supported(Hello)", observedMessages.get(1));
+
                 });
     }
 }
