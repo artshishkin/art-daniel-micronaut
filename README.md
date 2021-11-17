@@ -122,3 +122,44 @@ Launch:
     -  Memory Size: 128 MB	
     -  Max Memory Used: 100 MB
 -  Encountered Max Duration 600ms
+
+####  11 Tutorial - Deploy a Serverless Micronaut Function to AWS Lambda Java 11 Runtime
+
+Follow the Tutorial [DEPLOY A SERVERLESS MICRONAUT FUNCTION TO AWS LAMBDA JAVA 11 RUNTIME](https://guides.micronaut.io/latest/mn-serverless-function-aws-lambda-maven-java.html)
+
+#####  11.1 Init Application
+
+Launch:
+    -  Function Application for Serverless
+    -  Java 11
+    -  Maven
+    -  Features
+        -  aws-lambda
+
+#####  11.2 Package
+
+-  `mvnw package`
+
+#####  11.3 Create Lambda Function
+
+-  Name: `mn-tutorial-lambda`
+-  Runtime: Java 11 (Corretto)
+-  Create function
+-  Upload from
+    -  provide jar
+-  As Handler, set:
+    -  `net.shyshkin.study.micronaut.BookRequestHandler`
+-  Test it
+    -  Event Template: `hello-world`
+    -  Name: `SendABook`
+```json
+{
+  "name": "Building Microservices"
+}
+```
+-  Results:    
+   -  Duration: 1.31 ms	
+   -  Billed Duration: 2 ms	
+   -  Memory Size: 512 MB	
+   -  Max Memory Used: 131 MB	
+-  Encountered Max Duration 37.8ms
