@@ -56,9 +56,16 @@ Tag container to push to DockerHub
 Push to Docker Hub
 -  `docker push artarkatesoft/mn-tutorial-first-graalvm`
 
+[MICRONAUT GRADLE PLUGIN](https://micronaut-projects.github.io/micronaut-gradle-plugin/snapshot/)
+-  `gradlew clean dockerBuild` - docker image `FROM openjdk:17-alpine`
+    -  size:  339MB
+    -  start time: 1737ms, 1115ms, 1330ms
+-  `gradlew clean dockerBuildNative` - native
+    -  size:  76.8MB
+    -  start time: 44ms, 67ms, 50ms
 
-
-
+-  `gradlew dockerPush` - first checks if it needs rebuilding
+-  `gradlew dockerPushNative` - native - first checks if it needs rebuilding
 
 
 

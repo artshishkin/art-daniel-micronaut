@@ -19,9 +19,22 @@ micronaut {
     }
 }
 
-tasks.named("dockerBuildNative") {
+tasks.named("dockerfile") {
+    args("-Xmx128m")
+}
+tasks.named("dockerfileNative") {
+    args("-Xmx64m")
+    instruction """EXPOSE 8080 """
+}
+
+tasks.named("dockerBuild") {
     images = ["artarkatesoft/mn-tutorial-first-graalvm:$project.version",
               "artarkatesoft/mn-tutorial-first-graalvm:latest"]
+}
+
+tasks.named("dockerBuildNative") {
+    images = ["artarkatesoft/mn-tutorial-first-graalvm-native:$project.version",
+              "artarkatesoft/mn-tutorial-first-graalvm-native:latest"]
 }
 
 dependencies {
