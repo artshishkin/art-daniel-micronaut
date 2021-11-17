@@ -79,7 +79,10 @@ Push to Docker Hub
     -  `$Env:Path+=";%GRAALVM_HOME%\bin"`
 4.  native-image tool installation
     -  `gu install native-image` 
-5.  Try to build native image    
+
+#####  Build Windows native image
+
+1.  Failed tries
     -  `gradlew --no-daemon -Dorg.gradle.java.home="c:\Program Files\Java\graalvm-ce-java11-21.3.0" clean nativeImage`
     -  got errors
         -  `Execution failed for task ':nativeImage'.`
@@ -92,8 +95,14 @@ Push to Docker Hub
         -  `Error: Use -H:+ReportExceptionStackTraces to print stacktrace of underlying exception`
         -  `Error: Image build request failed with exit status 1`
     -  cl.exe - install Microsoft Visual Studio
-
-
+2.  Working solution
+    -  in PowerShell run
+        -  `cmd.exe /c 'call "c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && gradlew --no-daemon -Dorg.gradle.java.home="c:\Program Files\Java\graalvm-ce-java11-21.3.0" clean nativeImage' `
+        -  size: application.exe - 52.5MB
+3.  Run
+    -  `build/native-image/application.exe`
+    -  start time:
+        -  536ms, 301ms, 465ms, 174ms, 167ms
        
 
 
