@@ -43,6 +43,21 @@ As Kafka runs on the host machine the stack must be attached to the correct host
 -  `docker stack deploy -c app.stack.yml mn-pricing-stack`
 -  will not work - because my docker is not in Swarm mode
 
+####  10 Tutorial - Creating your first micronaut graal application
+
+Follow the tutorial [CREATING YOUR FIRST MICRONAUT GRAAL APPLICATION](https://guides.micronaut.io/latest/micronaut-creating-first-graal-app-gradle-java.html)
+
+Build docker native image:
+-  `gradlew clean dockerBuildNative`
+Run container
+-  `docker run -p 8080:8080 mn-tutorial-first-graalvm`
+Tag container to push to DockerHub
+-  `docker tag mn-tutorial-first-graalvm artarkatesoft/mn-tutorial-first-graalvm`
+Push to Docker Hub
+-  `docker push artarkatesoft/mn-tutorial-first-graalvm`
+
+
+
 
 
 
