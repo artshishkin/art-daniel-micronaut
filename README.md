@@ -90,3 +90,35 @@ Launch:
     -  bootstrap
     -  func
 
+#####  8.3 Create Lambda Function
+
+-  Name: `mn-tutorial-graalvm-lambda`
+-  Runtime: Custom -> Provide your own bootstrap on Amazon Linux 2
+-  Create function
+-  Upload from
+    -  provide zip
+-  As Handler, set:
+    -  `io.micronaut.function.aws.proxy.MicronautLambdaHandler`   
+-  Test it
+    -  Event Template: `apigateway-aws-proxy`
+    -  Name: `POST_a_Book`
+```json
+{
+  "body": "{\"name\": \"Building Microservices\"}",
+  "resource": "/",
+  "path": "/",
+  "httpMethod": "POST",
+  "isBase64Encoded": false,
+  "queryStringParameters": {},
+  "multiValueQueryStringParameters": {},
+  "pathParameters": {},
+  "stageVariables": {},
+  ...
+}
+```
+-  Results:
+    -  Duration: 1.50 ms	
+    -  Billed Duration: 2 ms	
+    -  Memory Size: 128 MB	
+    -  Max Memory Used: 100 MB
+-  Encountered Max Duration 600ms
