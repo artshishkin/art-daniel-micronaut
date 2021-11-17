@@ -67,5 +67,17 @@ Push to Docker Hub
 -  `gradlew dockerPush` - first checks if it needs rebuilding
 -  `gradlew dockerPushNative` - native - first checks if it needs rebuilding
 
+####  8 Deploy a Micronaut Application as a GraalVM Native Image to AWS Lambda
+
+Follow the Tutorial [DEPLOY A MICRONAUT APPLICATION AS A GRAALVM NATIVE IMAGE TO AWS LAMBDA](https://guides.micronaut.io/latest/mn-application-aws-lambda-graalvm-gradle-java.html)
+
+#####  8.1 Init Application
+
+Launch:
+    -  Micronaut Application
+    -  Java 11
+    -  Gradle
+    -  Features
+        -  aws-lambda,graalvm
 
 
