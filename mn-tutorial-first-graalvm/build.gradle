@@ -19,6 +19,11 @@ micronaut {
     }
 }
 
+tasks.named("dockerBuildNative") {
+    images = ["artarkatesoft/mn-tutorial-first-graalvm:$project.version",
+              "artarkatesoft/mn-tutorial-first-graalvm:latest"]
+}
+
 dependencies {
     annotationProcessor("io.micronaut:micronaut-http-validation")
     implementation("io.micronaut:micronaut-http-client")
