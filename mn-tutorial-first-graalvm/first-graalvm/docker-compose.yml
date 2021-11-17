@@ -1,0 +1,6 @@
+version: '3'
+services:
+  tutorial-graalvm:
+    image: artarkatesoft/mn-tutorial-first-graalvm-native:0.1
+    ports:
+    - 8080:8080
