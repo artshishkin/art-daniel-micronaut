@@ -67,5 +67,33 @@ Push to Docker Hub
 -  `gradlew dockerPush` - first checks if it needs rebuilding
 -  `gradlew dockerPushNative` - native - first checks if it needs rebuilding
 
+#####  Install GraalVM SDK on Windows
+
+1.  Download [GraalVM](https://www.graalvm.org)
+2.  Unzip
+3.  Set Env Variables
+    -  `setx /M GRAALVM_HOME "c:\Program Files\Java\graalvm-ce-java11-21.3.0"`
+    -  `setx /M PATH "%GRAALVM_HOME%\bin;%PATH%"`
+    -  **or** for PowerShell
+    -  `$Env:GRAALVM_HOME="c:\Program Files\Java\graalvm-ce-java11-21.3.0"`
+    -  `$Env:Path+=";%GRAALVM_HOME%\bin"`
+4.  native-image tool installation
+    -  `gu install native-image` 
+5.  Try to build native image    
+    -  `gradlew --no-daemon -Dorg.gradle.java.home="c:\Program Files\Java\graalvm-ce-java11-21.3.0" clean nativeImage`
+    -  got errors
+        -  `Execution failed for task ':nativeImage'.`
+        -  `> Process 'command 'C:\Program Files\Java\graalvm-ce-java11-21.3.0\lib\svm\bin\native-image.exe'' finished with non-zero exit value 1`
+    -  **another try**
+    -  `gradlew --no-daemon -Dorg.gradle.java.home="c:\Program Files\Java\graalvm-ce-java11-21.3.0" clean nativeCompile`
+    -  got errors
+        -  `Error: Default native-compiler executable 'cl.exe' not found via environment variable PATH`
+        -  `Error: To prevent native-toolchain checking provide command-line option -H:-CheckToolchain`
+        -  `Error: Use -H:+ReportExceptionStackTraces to print stacktrace of underlying exception`
+        -  `Error: Image build request failed with exit status 1`
+    -  cl.exe - install Microsoft Visual Studio
+
+
+       
 
 
