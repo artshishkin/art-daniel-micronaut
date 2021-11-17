@@ -80,4 +80,13 @@ Launch:
     -  Features
         -  aws-lambda,graalvm
 
+#####  8.2 Build Image
+
+-  `gradlew test`
+-   open build/reports/tests/test/index.html
+-  `gradlew buildNativeLambda`
+-  will generate build/libs/mn-tutorial-graalvm-lambda-0.1-lambda.zip
+    -  contains:
+    -  bootstrap
+    -  func
 
