@@ -148,7 +148,7 @@ Launch:
 -  Upload from
     -  provide jar
 -  As Handler, set:
-    -  `net.shyshkin.study.micronaut.CronJobHandler`
+    -  `net.shyshkin.study.micronaut.BookRequestHandler`
 -  Test it
     -  Event Template: `hello-world`
     -  Name: `SendABook`
@@ -182,5 +182,6 @@ Launch:
 1.  Delete Sample Code
 2.  Create Handler
 
+#####  12.3 Logger Configuration
 
 

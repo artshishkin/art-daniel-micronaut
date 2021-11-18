@@ -14,7 +14,7 @@ public class CronJobHandler extends MicronautRequestHandler<Map<String, Object>,
 
     @Override
     public Void execute(Map<String, Object> input) {
-        log.info("{}", input);
+        log.trace("{}", input);
         return null;
     }
 }
