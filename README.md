@@ -148,7 +148,7 @@ Launch:
 -  Upload from
     -  provide jar
 -  As Handler, set:
-    -  `net.shyshkin.study.micronaut.BookRequestHandler`
+    -  `net.shyshkin.study.micronaut.CronJobHandler`
 -  Test it
     -  Event Template: `hello-world`
     -  Name: `SendABook`
@@ -163,3 +163,24 @@ Launch:
    -  Memory Size: 512 MB	
    -  Max Memory Used: 131 MB	
 -  Encountered Max Duration 37.8ms
+
+####  12 Tutorial - Micronaut AWS Lambda and a Cron Job
+
+Follow the Tutorial [MICRONAUT AWS LAMBDA AND A CRON JOB](https://guides.micronaut.io/latest/micronaut-aws-lambda-eventbridge-event-maven-java.html)
+
+#####  12.1 Init Application
+
+Launch:
+    -  Function Application for Serverless
+    -  Java 11
+    -  Maven
+    -  Features
+        -  aws-lambda
+
+#####  12.2 Application Content
+
+1.  Delete Sample Code
+2.  Create Handler
+
+
+
