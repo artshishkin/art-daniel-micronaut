@@ -1,3 +1,8 @@
 micronaut:
   application:
     name: mnTutorialCronJobsLambdaGraalvm
+jackson:
+  deserialization:
+    FAIL_ON_UNKNOWN_PROPERTIES: false
+    FAIL_ON_INVALID_SUBTYPE: false
+
