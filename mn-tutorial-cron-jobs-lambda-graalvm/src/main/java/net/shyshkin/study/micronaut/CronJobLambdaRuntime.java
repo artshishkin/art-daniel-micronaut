@@ -6,7 +6,6 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.function.aws.runtime.AbstractMicronautLambdaRuntime;
 import net.shyshkin.study.micronaut.graalvm.CronJobHandler;
 
-import java.net.MalformedURLException;
 import java.util.Map;
 
 public class CronJobLambdaRuntime extends AbstractMicronautLambdaRuntime<ScheduledEvent, Void, Map<String, Object>, Void> {
@@ -15,7 +14,7 @@ public class CronJobLambdaRuntime extends AbstractMicronautLambdaRuntime<Schedul
         try {
             new CronJobLambdaRuntime().run(args);
 
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

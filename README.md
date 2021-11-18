@@ -276,3 +276,15 @@ by: io.micronaut.http.codec.CodecException: Error decoding stream for type [clas
 at [Source: (byte[])"{"id":"cdc73f9d-aea9-11e3-9d5a-835b769c0d9c","detail-type":"Scheduled Event","source":"aws.events","account":"123456789012","time":"1970-01-01T00:00:00Z","region":"us-east-1","resources":["arn:aws:events:us-east-1:123456789012:rule/ExampleRule"],"detail":{}}"; line: 1, column: 132] (through reference chain: com.amazonaws.services.lambda.runtime.events.ScheduledEvent["time"])
 ```
 
+#####  12.6 Fixing Error with JodaTime
+
+-  added `com.fasterxml.jackson.datatype:jackson-datatype-joda` dependency
+-  got an Error
+```
+Caused by: com.oracle.graal.pointsto.constraints.UnsupportedFeatureException: No instances of org.joda.time.UTCDateTimeZone are allowed in the image heap as this class should be initia
+lized at image runtime. To see how this object got instantiated use --trace-object-instantiation=org.joda.time.UTCDateTimeZone.
+
+```
+
+
+

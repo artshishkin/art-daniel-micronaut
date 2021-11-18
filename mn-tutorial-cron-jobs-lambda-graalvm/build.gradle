@@ -33,6 +33,7 @@ dependencies {
 
     implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime")
 
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-joda")
 }
 
 
