@@ -286,5 +286,17 @@ lized at image runtime. To see how this object got instantiated use --trace-obje
 
 ```
 
+####  13 Tutorial - Micronaut AWS Lambda and S3 Event
+
+Follow the tutorial [MICRONAUT AWS LAMBDA AND S3 EVENT](https://guides.micronaut.io/latest/micronaut-aws-lambda-s3-event-maven-java.html)
+
+#####  13.1 Init Application
+
+Launch:
+    -  Function Application for Serverless
+    -  Java 11
+    -  Maven
+    -  Features
+        -  aws-lambda
 
 
