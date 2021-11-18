@@ -6,9 +6,7 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.function.aws.runtime.AbstractMicronautLambdaRuntime;
 import net.shyshkin.study.micronaut.graalvm.CronJobHandler;
 
-import java.util.Map;
-
-public class CronJobLambdaRuntime extends AbstractMicronautLambdaRuntime<ScheduledEvent, Void, Map<String, Object>, Void> {
+public class CronJobLambdaRuntime extends AbstractMicronautLambdaRuntime<ScheduledEvent, Void, ScheduledEvent, Void> {
 
     public static void main(String[] args) {
         try {
@@ -21,7 +19,7 @@ public class CronJobLambdaRuntime extends AbstractMicronautLambdaRuntime<Schedul
 
     @Override
     @Nullable
-    protected RequestHandler<Map<String, Object>, Void> createRequestHandler(String... args) {
+    protected RequestHandler<ScheduledEvent, Void> createRequestHandler(String... args) {
         return new CronJobHandler();
     }
 }
