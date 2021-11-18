@@ -230,5 +230,49 @@ Launch:
     -  Max Memory Used: 127 MB	
 -  Encountered Max Duration 6.24ms
 
+#####  12.5 Compare with native
 
+1. Launch:
+    -  Function Application for Serverless
+    -  Java 11
+    -  Gradle
+    -  Features
+        -  aws-lambda,graalvm
+2.  Modify App content and Tests
+3.  Modify logback configuration
+4.  Build native lambda
+    -  `gradlew clean buildNativeLambda`        
+5.  Create Lambda function        
+    -  Name: `mn-tutorial-cron-jobs-lambda-graalvm`
+    -  Runtime: Custom -> Provide your own bootstrap on Amazon Linux 2
+    -  Create function
+    -  Upload from
+        -  provide zip
+    -  As Handler, set:
+        -  `net.shyshkin.study.micronaut.graalvm.CronJobHandler`   
+6.  Test it
+    -  New Event - CloudWatch
+        -  Scheduled
+        -  Name: 5minutesEvent
+    -  Save changes
+    -  Test
+```json
+{
+  "id": "cdc73f9d-aea9-11e3-9d5a-835b769c0d9c",
+  "detail-type": "Scheduled Event",
+  "source": "aws.events",
+  "account": "123456789012",
+  "time": "1970-01-01T00:00:00Z",
+  "region": "us-east-1",
+  "resources": [
+    "arn:aws:events:us-east-1:123456789012:rule/ExampleRule"
+  ],
+  "detail": {}
+}
+``` 
+-  Got an Error
+```
+by: io.micronaut.http.codec.CodecException: Error decoding stream for type [class com.amazonaws.services.lambda.runtime.events.ScheduledEvent]: Joda date/time type `org.joda.time.DateTime` not supported by default: add Module "com.fasterxml.jackson.datatype:jackson-datatype-joda" to enable handling
+at [Source: (byte[])"{"id":"cdc73f9d-aea9-11e3-9d5a-835b769c0d9c","detail-type":"Scheduled Event","source":"aws.events","account":"123456789012","time":"1970-01-01T00:00:00Z","region":"us-east-1","resources":["arn:aws:events:us-east-1:123456789012:rule/ExampleRule"],"detail":{}}"; line: 1, column: 132] (through reference chain: com.amazonaws.services.lambda.runtime.events.ScheduledEvent["time"])
+```
 

@@ -1,0 +1,3 @@
+#!/bin/sh
+set -euo pipefail
+./mn-tutorial-cron-jobs-lambda-graalvm -Xmx512m
