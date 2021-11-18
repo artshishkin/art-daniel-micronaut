@@ -184,4 +184,51 @@ Launch:
 
 #####  12.3 Logger Configuration
 
+#####  12.4 Create Lambda Function
+
+-  Name: `mn-tutorial-cron-jobs-lambda`
+-  Runtime: Java 11 (Corretto)
+-  Create function
+-  Upload from
+    -  provide jar
+-  As Handler, set:
+    -  `net.shyshkin.study.micronaut.CronJobHandler`
+-  Test it
+    -  New Event - CloudWatch
+        -  Scheduled
+        -  Name: 5minutesEvent
+    -  Save changes
+    -  Test
+```json
+{
+  "id": "cdc73f9d-aea9-11e3-9d5a-835b769c0d9c",
+  "detail-type": "Scheduled Event",
+  "source": "aws.events",
+  "account": "123456789012",
+  "time": "1970-01-01T00:00:00Z",
+  "region": "us-east-1",
+  "resources": [
+    "arn:aws:events:us-east-1:123456789012:rule/ExampleRule"
+  ],
+  "detail": {}
+}
+```    
+-  Add trigger
+    -  Event Bridge (CloudWatchEvents)
+    -  Create a new Rule
+        -  Rule name: `5minutes`
+        -  Rule description: `Scheduled expression every 5 minutes`
+        -  Schedule expression: `rate(5 minutes)`
+-  View Cloud Watch Logs
+```
+2021-11-18 09:19:17 6b38091d-97c2-4c08-8345-5f9944047faa mn-tutorial-cron-jobs-lambda $LATEST arn:aws:lambda:eu-north-1:392971033516:function:mn-tutorial-cron-jobs-lambda 512  14995 1-61961a93-5a2ea5c867a6f13e6b88bbd5 TRACE n.s.s.m.CronJobHandler - {version=0, id=2bc60a77-2633-05e1-026f-ee2ac182f918, detail-type=Scheduled Event, source=aws.events, account=392971033516, time=2021-11-18T09:19:12Z, region=eu-north-1, resources=[arn:aws:events:eu-north-1:392971033516:rule/5minutes], detail={}}
+```
+-  Results:
+    -  Duration: 1.17 ms	
+    -  Billed Duration: 2 ms	
+    -  Memory Size: 512 MB	
+    -  Max Memory Used: 127 MB	
+-  Encountered Max Duration 6.24ms
+
+
 
