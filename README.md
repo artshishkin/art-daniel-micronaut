@@ -307,3 +307,17 @@ Go to AWS S3 and create bucket
     -  images
     -  thumbnails
 
+#####  13.7 Create Lambda Function
+
+-  Name: `mn-tutorial-s3-lambda`
+-  Runtime: Java 11 (Corretto)
+-  Role: Create a new role with basic Lambda permissions
+    -  Lambda will create an execution role named mn-tutorial-s3-lambda-role-<random>, with permission to upload logs to Amazon CloudWatch Logs.
+    -  We will modify it later to access S3 (Get/Put Object)    
+-  Create function
+-  Upload from
+    -  provide jar (`mvnw clean package` before)
+-  As Handler, set:
+    -  `net.shyshkin.study.micronaut.thumbnail.ThumbnailHandler`   
+
+  
