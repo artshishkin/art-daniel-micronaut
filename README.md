@@ -299,4 +299,11 @@ Launch:
     -  Features
         -  aws-lambda
 
+#####  13.6 Create S3 Bucket
+
+Go to AWS S3 and create bucket
+-  Name: `mn-tutorial-s3-lambda`
+-  Create folders:
+    -  images
+    -  thumbnails
 
