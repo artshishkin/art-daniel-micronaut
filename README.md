@@ -357,4 +357,21 @@ Review Policy
 IAM Role
     -  `mn-tutorial-s3-lambda-role-haku8may`
     -  Attach Policy `mn-tutorial-s3-lambda-policy`
+
+#####  13.9 Add triggers
+
+-  Create 2 triggers: 1 for `jpg`, another - for `png`
+-  Trigger configuration
+    -  S3
+    -  Bucket: `mn-tutorial-s3-lambda`
+    -  Event type: PUT
+    -  Prefix: `images/`
+    -  Suffix: `.jpg` 
+-  Test it
+    -  Upload jpg or png file into `images/`
+    -  View thumbnails in `thumbnails/`
+    -  Monitor -> execution time
+    -  CloudWatch logs 
+
+
     
