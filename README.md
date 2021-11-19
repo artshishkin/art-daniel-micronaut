@@ -320,4 +320,41 @@ Go to AWS S3 and create bucket
 -  As Handler, set:
     -  `net.shyshkin.study.micronaut.thumbnail.ThumbnailHandler`   
 
-  
+#####  13.8 Modify IAM Role of Lambda
+
+Create Policy
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowReadFromImages",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::mn-tutorial-s3-lambda/images"
+            ]
+        },
+        {
+            "Sid": "AllowPutToThumbnails",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::mn-tutorial-s3-lambda/thumbnails"
+            ]
+        }
+    ]
+}
+```
+Review Policy
+    -  name: `mn-tutorial-s3-lambda-policy`
+    -  Description: `Policy to Allow lambda Function to Read From S3 images folder and write to thumbnails folder`
+
+IAM Role
+    -  `mn-tutorial-s3-lambda-role-haku8may`
+    -  Attach Policy `mn-tutorial-s3-lambda-policy`
+    
