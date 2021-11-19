@@ -1,0 +1,3 @@
+#!/bin/sh
+set -euo pipefail
+./mn-tutorial-s3-lambda-graalvm -Xmx512m

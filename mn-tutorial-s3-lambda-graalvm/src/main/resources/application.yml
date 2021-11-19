@@ -1,0 +1,7 @@
+micronaut:
+  application:
+    name: mnTutorialS3LambdaGraalvm
+app:
+  thumbnail:
+    width: 256
+    height: 256
