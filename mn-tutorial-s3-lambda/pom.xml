@@ -43,6 +43,14 @@
       <artifactId>micronaut-function-aws</artifactId>
       <scope>compile</scope>
     </dependency>
+
+    <dependency>
+      <groupId>net.coobird</groupId>
+      <artifactId>thumbnailator</artifactId>
+      <version>0.4.14</version>
+      <scope>compile</scope>
+    </dependency>
+
     <dependency>
       <groupId>io.micronaut</groupId>
       <artifactId>micronaut-http-client</artifactId>
