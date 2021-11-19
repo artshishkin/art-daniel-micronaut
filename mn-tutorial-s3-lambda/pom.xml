@@ -44,6 +44,27 @@
       <scope>compile</scope>
     </dependency>
 
+    <!--S3NotificationEvent-->
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-lambda-java-events</artifactId>
+      <version>3.10.0</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <!--S3Client-->
+    <dependency>
+      <groupId>io.micronaut.aws</groupId>
+      <artifactId>micronaut-aws-sdk-v2</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>s3</artifactId>
+      <scope>compile</scope>
+      <version>2.15.53</version>
+    </dependency>
+
     <dependency>
       <groupId>net.coobird</groupId>
       <artifactId>thumbnailator</artifactId>
