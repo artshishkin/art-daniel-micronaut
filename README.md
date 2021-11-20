@@ -399,5 +399,52 @@ at [Source: (byte[])"{"Records":[{"eventVersion":"2.0","eventSource":"aws:s3","a
 
 #####  13.12  S3 Event Notification Introspection
 
+#####  13.13  Trying to read data using s3Client.getObject
+
+```
+Invocation with requestId [d5578650-5be7-434d-8751-a7e92ec7ca5c] failed: sun.java2d.Disposer.addRecord(Ljava/lang/Object;JJ)Vjava.lang.NoSuchMethodError: sun.java2d.Disposer.addRecord(Ljava/lang/Object;JJ)V
+at com.oracle.svm.jni.functions.JNIFunctions$Support.getMethodID(JNIFunctions.java:1114)
+at com.oracle.svm.jni.functions.JNIFunctions$Support.getMethodID(JNIFunctions.java:1099)
+at com.oracle.svm.jni.functions.JNIFunctions.GetStaticMethodID(JNIFunctions.java:416)
+at sun.java2d.Disposer.initIDs(Disposer.java)
+at sun.java2d.Disposer.<clinit>(Disposer.java:71)
+at javax.imageio.stream.FileCacheImageInputStream.<init>(FileCacheImageInputStream.java:114)
+at com.sun.imageio.spi.InputStreamImageInputStreamSpi.createInputStreamInstance(InputStreamImageInputStreamSpi.java:69)
+at javax.imageio.ImageIO.createImageInputStream(ImageIO.java:357)
+at net.coobird.thumbnailator.tasks.io.InputStreamImageSource.read(Unknown Source)
+at net.coobird.thumbnailator.tasks.SourceSinkThumbnailTask.read(Unknown Source)
+at net.coobird.thumbnailator.Thumbnailator.createThumbnail(Unknown Source)
+at net.coobird.thumbnailator.Thumbnails$Builder.toOutputStream(Unknown Source)
+at net.shyshkin.study.micronaut.thumbnail.graalvm.generator.ThumbnailatorThumbnailGenerator.thumbnail(ThumbnailatorThumbnailGenerator.java:34)
+at net.shyshkin.study.micronaut.thumbnail.graalvm.generator.$ThumbnailatorThumbnailGenerator$Definition$Intercepted.$$access$$thumbnail(Unknown Source)
+at net.shyshkin.study.micronaut.thumbnail.graalvm.generator.$ThumbnailatorThumbnailGenerator$Definition$Exec.dispatch(Unknown Source)
+at io.micronaut.aop.chain.MethodInterceptorChain.proceed(MethodInterceptorChain.java:128)
+at io.micronaut.validation.ValidatingInterceptor.intercept(ValidatingInterceptor.java:138)
+at io.micronaut.aop.chain.MethodInterceptorChain.proceed(MethodInterceptorChain.java:137)
+at net.shyshkin.study.micronaut.thumbnail.graalvm.generator.$ThumbnailatorThumbnailGenerator$Definition$Intercepted.thumbnail(Unknown Source)
+at net.shyshkin.study.micronaut.thumbnail.graalvm.ThumbnailHandler.lambda$persistThumbnail$3(ThumbnailHandler.java:80)
+at java.util.Optional.flatMap(Optional.java:294)
+at net.shyshkin.study.micronaut.thumbnail.graalvm.ThumbnailHandler.persistThumbnail(ThumbnailHandler.java:80)
+at java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+at java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)
+at java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:177)
+at java.util.stream.ReferencePipeline$11$1.accept(ReferencePipeline.java:442)
+at java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)
+at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:658)
+at java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:274)
+at java.util.stream.Streams$StreamBuilderImpl.forEachRemaining(Streams.java:411)
+at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)
+at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)
+at java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150)
+at java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173)
+at java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+at java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:497)
+at net.shyshkin.study.micronaut.thumbnail.graalvm.ThumbnailHandler.execute(ThumbnailHandler.java:70)
+at net.shyshkin.study.micronaut.thumbnail.graalvm.ThumbnailHandler.execute(ThumbnailHandler.java:22)
+at io.micronaut.function.aws.MicronautRequestHandler.handleRequest(MicronautRequestHandler.java:90)
+at io.micronaut.function.aws.runtime.AbstractMicronautLambdaRuntime.startRuntimeApiEventLoop(AbstractMicronautLambdaRuntime.java:347)
+at io.micronaut.function.aws.runtime.AbstractMicronautLambdaRuntime.run(AbstractMicronautLambdaRuntime.java:129)
+at net.shyshkin.study.micronaut.ThumbnailLambdaRuntime.main(ThumbnailLambdaRuntime.java:16)
+```
 
 
