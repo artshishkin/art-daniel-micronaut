@@ -460,10 +460,30 @@ Launch:
     -  Features:
         -  lombok
     
+#####  14.3 Deploy to Elastic Beanstalk    
     
-    
-
-
+1.  Package App
+    -  `mvnw clean package`
+2.  Create Beanstalk Application
+    -  Platform: Java 11
+    -  Upload your code -> jar
+    -  Version label: `mn-tutorial-beanstalk-source-0.1`
+    -  Configure more options
+3.  Configure Environment
+    -  Presents: single instance
+    -  Environment Properties
+        -  MICRONAUT_SERVER_PORT: 5000
+        -  Save
+    -  Create app
+4.  Test it
+    -  Environment
+    -  Go to environment
+    -  Add `/health`
+    -  like this `http://mntutorialbeanstalk-env.eba-eu6xicim.eu-north-1.elasticbeanstalk.com/health`
+    -  `{"status":"UP"}`
+5.  Clean up
+    -  application
+    -  Delete                    
 
 
 
