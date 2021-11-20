@@ -1,12 +1,12 @@
 package net.shyshkin.study.micronaut.thumbnail.graalvm;
 
+import com.amazonaws.services.s3.event.S3EventNotification;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.function.aws.MicronautRequestHandler;
 import jakarta.inject.Inject;
 import net.shyshkin.study.micronaut.thumbnail.graalvm.generator.ThumbnailGenerator;
-import net.shyshkin.study.micronaut.thumbnail.graalvm.s3art.S3EventNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -41,27 +41,24 @@ public class ThumbnailHandler extends MicronautRequestHandler<Object, Void> {
     public Void execute(Object input) {
         log.debug("input: {}", input);
         LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) input;
-        log.debug("LinkedHashMap: {}", map);
         S3EventNotification s3Event = null;
         String jsonInput = null;
         try {
             jsonInput = objectMapper.writeValueAsString(map);
             log.debug("JSON: {}", jsonInput);
             s3Event = objectMapper.readValue(jsonInput, S3EventNotification.class);
+
+            S3EventNotification.S3ObjectEntity s3ObjectEntity = s3Event.getRecords().get(0).getS3().getObject();
+            log.debug("s3Event record 0: key {}, size {}", s3ObjectEntity.getKey(),s3ObjectEntity.getSizeAsLong());
+
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error("Exception in Parsing: ", e);
         }
-        log.debug("s3Event: {}", s3Event);
 
-        Object records = map.get("Records");
-
-        log.debug("Record class: {}", ((List<Object>)records).get(0).getClass());
-        log.debug("Record: {}", ((List<Object>)records).get(0));
-
-
-
-//        input.getRecords()
+//        Optional
+//                .ofNullable(s3Event)
 //                .stream()
+//                .flatMap(event -> event.getRecords().stream())
 //                .peek(record -> log.info("event name: {}", record.getEventName()))
 //                .filter(record -> record.getEventName().contains(OBJECT_CREATED))
 //                .map(S3EventNotification.S3EventNotificationRecord::getS3)

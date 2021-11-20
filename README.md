@@ -393,4 +393,11 @@ IAM Role
 ```
 Caused by: com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Cannot construct instance of `com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification` (no Creators, like default constructor, exist): cannot deserialize from Object value (no delegate- or property-based Creator)
 at [Source: (byte[])"{"Records":[{"eventVersion":"2.0","eventSource":"aws:s3","awsRegion":"us-east-1","eventTime":"1970-01-01T00:00:00.000Z","eventName":"ObjectCreated:Put","userIdentity":{"principalId":"EXAMPLE"},"requestParameters":{"sourceIPAddress":"127.0.0.1"},"responseElements":{"x-amz-request-id":"EXAMPLE123456789","x-amz-id-2":"EXAMPLE123/5678abcdefghijklambdaisawesome/mnopqrstuvwxyzABCDEFGH"},"s3":{"s3SchemaVersion":"1.0","configurationId":"testConfigRule","bucket":{"name":"example-bucket","ownerIdentity":{"[truncated 182 bytes]; line: 1, column: 2]
-```    
+```
+
+#####  13.11  Custom S3EventNotification with Introspected annotation
+
+#####  13.12  S3 Event Notification Introspection
+
+
+
