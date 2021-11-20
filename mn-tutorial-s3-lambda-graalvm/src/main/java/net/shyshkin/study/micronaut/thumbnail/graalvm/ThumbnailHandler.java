@@ -1,17 +1,21 @@
 package net.shyshkin.study.micronaut.thumbnail.graalvm;
 
-import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.function.aws.MicronautRequestHandler;
 import jakarta.inject.Inject;
 import net.shyshkin.study.micronaut.thumbnail.graalvm.generator.ThumbnailGenerator;
+import net.shyshkin.study.micronaut.thumbnail.graalvm.s3art.S3EventNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.s3.S3Client;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Introspected
-public class ThumbnailHandler extends MicronautRequestHandler<S3EventNotification, Void> {
+public class ThumbnailHandler extends MicronautRequestHandler<Object, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(ThumbnailHandler.class);
 
@@ -27,12 +31,35 @@ public class ThumbnailHandler extends MicronautRequestHandler<S3EventNotificatio
     @Inject
     public ThumbnailGenerator thumbnailGenerator;
 
-//    @Inject
-//    public S3Client s3Client;
+    @Inject
+    public S3Client s3Client;
+
+    @Inject
+    public ObjectMapper objectMapper;
 
     @Override
-    public Void execute(S3EventNotification input) {
-        log.debug("S3Event: {}", input);
+    public Void execute(Object input) {
+        log.debug("input: {}", input);
+        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) input;
+        log.debug("LinkedHashMap: {}", map);
+        S3EventNotification s3Event = null;
+        String jsonInput = null;
+        try {
+            jsonInput = objectMapper.writeValueAsString(map);
+            log.debug("JSON: {}", jsonInput);
+            s3Event = objectMapper.readValue(jsonInput, S3EventNotification.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        log.debug("s3Event: {}", s3Event);
+
+        Object records = map.get("Records");
+
+        log.debug("Record class: {}", ((List<Object>)records).get(0).getClass());
+        log.debug("Record: {}", ((List<Object>)records).get(0));
+
+
+
 //        input.getRecords()
 //                .stream()
 //                .peek(record -> log.info("event name: {}", record.getEventName()))
