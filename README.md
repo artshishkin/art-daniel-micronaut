@@ -447,4 +447,23 @@ at io.micronaut.function.aws.runtime.AbstractMicronautLambdaRuntime.run(Abstract
 at net.shyshkin.study.micronaut.ThumbnailLambdaRuntime.main(ThumbnailLambdaRuntime.java:16)
 ```
 
+####  14 Tutorial - Deploy a Micronaut Application to AWS Elastic Beanstalk
+
+Follow the Tutorial [DEPLOY A MICRONAUT APPLICATION TO AWS ELASTIC BEANSTALK](https://guides.micronaut.io/latest/micronaut-elasticbeanstalk-maven-java.html)
+
+#####  14.1 Init Application
+
+Launch:
+    -  Micronaut Application
+    -  Java 11
+    -  Maven
+    -  Features:
+        -  lombok
+    
+    
+    
+
+
+
+
 
