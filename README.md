@@ -67,6 +67,43 @@ Push to Docker Hub
 -  `gradlew dockerPush` - first checks if it needs rebuilding
 -  `gradlew dockerPushNative` - native - first checks if it needs rebuilding
 
+#####  Install GraalVM SDK on Windows
+
+1.  Download [GraalVM](https://www.graalvm.org)
+2.  Unzip
+3.  Set Env Variables
+    -  `setx /M GRAALVM_HOME "c:\Program Files\Java\graalvm-ce-java11-21.3.0"`
+    -  `setx /M PATH "%GRAALVM_HOME%\bin;%PATH%"`
+    -  **or** for PowerShell
+    -  `$Env:GRAALVM_HOME="c:\Program Files\Java\graalvm-ce-java11-21.3.0"`
+    -  `$Env:Path+=";%GRAALVM_HOME%\bin"`
+4.  native-image tool installation
+    -  `gu install native-image` 
+
+#####  Build Windows native image
+
+1.  Failed tries
+    -  `gradlew --no-daemon -Dorg.gradle.java.home="c:\Program Files\Java\graalvm-ce-java11-21.3.0" clean nativeImage`
+    -  got errors
+        -  `Execution failed for task ':nativeImage'.`
+        -  `> Process 'command 'C:\Program Files\Java\graalvm-ce-java11-21.3.0\lib\svm\bin\native-image.exe'' finished with non-zero exit value 1`
+    -  **another try**
+    -  `gradlew --no-daemon -Dorg.gradle.java.home="c:\Program Files\Java\graalvm-ce-java11-21.3.0" clean nativeCompile`
+    -  got errors
+        -  `Error: Default native-compiler executable 'cl.exe' not found via environment variable PATH`
+        -  `Error: To prevent native-toolchain checking provide command-line option -H:-CheckToolchain`
+        -  `Error: Use -H:+ReportExceptionStackTraces to print stacktrace of underlying exception`
+        -  `Error: Image build request failed with exit status 1`
+    -  cl.exe - install Microsoft Visual Studio
+2.  Working solution
+    -  in PowerShell run
+        -  `cmd.exe /c 'call "c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && gradlew --no-daemon -Dorg.gradle.java.home="c:\Program Files\Java\graalvm-ce-java11-21.3.0" clean nativeImage' `
+        -  size: application.exe - 52.5MB
+3.  Run
+    -  `build/native-image/application.exe`
+    -  start time:
+        -  536ms, 301ms, 465ms, 174ms, 167ms
+       
 ####  8 Deploy a Micronaut Application as a GraalVM Native Image to AWS Lambda
 
 Follow the Tutorial [DEPLOY A MICRONAUT APPLICATION AS A GRAALVM NATIVE IMAGE TO AWS LAMBDA](https://guides.micronaut.io/latest/mn-application-aws-lambda-graalvm-gradle-java.html)
