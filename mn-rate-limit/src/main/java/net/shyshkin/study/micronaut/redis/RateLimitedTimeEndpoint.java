@@ -1,6 +1,5 @@
 package net.shyshkin.study.micronaut.redis;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.micronaut.http.MediaType;
@@ -10,6 +9,7 @@ import io.micronaut.http.annotation.Produces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Clock;
 import java.time.LocalTime;
 
 @Controller("/api/time")
@@ -27,9 +27,17 @@ public class RateLimitedTimeEndpoint {
 
     @Get
     @Produces(MediaType.TEXT_PLAIN)
-    public String getTime() {
+    public String time() {
+        return getTime("EXAMPLE::TIME", LocalTime.now());
+    }
 
-        String key = "EXAMPLE::TIME";
+    @Get("/utc")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String utc() {
+        return getTime("EXAMPLE::UTC", LocalTime.now(Clock.systemUTC()));
+    }
+
+    private String getTime(String key, LocalTime time) {
         String value = redis.sync().get(key);
 
         int currentQuota = value == null ? 0 : Integer.parseInt(value);
@@ -41,7 +49,7 @@ public class RateLimitedTimeEndpoint {
         }
         log.info("Current quota {} {}/{}", key, currentQuota, QUOTA_PER_MINUTE);
         increaseCurrentQuota(key);
-        return LocalTime.now().toString();
+        return time.toString();
     }
 
     private void increaseCurrentQuota(String key) {
@@ -52,22 +60,6 @@ public class RateLimitedTimeEndpoint {
         var remainingSeconds = 60 - LocalTime.now().getSecond();
         commands.expire(key, remainingSeconds);
         commands.exec();
-    }
-
-    @Get("/json")
-    @Produces(MediaType.APPLICATION_JSON)
-    public TimeJson getTimeAsJson() {
-        return new TimeJson();
-    }
-
-    static class TimeJson {
-
-        @JsonFormat(pattern = "HH-mm-ss.SSS")
-        private LocalTime time = LocalTime.now();
-
-        public LocalTime getTime() {
-            return time;
-        }
     }
 
 }
