@@ -8,11 +8,12 @@ import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
-import io.reactivex.Flowable;
 import org.bson.Document;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Controller("/api/prices")
 public class PricesEndpoint {
@@ -26,13 +27,13 @@ public class PricesEndpoint {
     }
 
     @Get
-    public Flowable<Document> getAllPrices() {
+    public Flux<Document> getAllPrices() {
         MongoCollection<Document> collection = client.getDatabase("prices").getCollection("example");
-        return Flowable.fromPublisher(collection.find());
+        return Flux.from(collection.find());
     }
 
     @Post
-    public Flowable<InsertOneResult> insert(@Body ObjectNode json) {
+    public Mono<InsertOneResult> insert(@Body ObjectNode json) {
 
         String jsonText = json.toString();
         log.info("JSON {}", jsonText);
@@ -42,7 +43,7 @@ public class PricesEndpoint {
                 .getDatabase("prices")
                 .getCollection("example")
                 .insertOne(doc);
-        return Flowable.fromPublisher(insertOne);
+        return Mono.from(insertOne);
     }
 
 }
