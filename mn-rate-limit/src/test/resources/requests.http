@@ -1,0 +1,7 @@
+GET http://localhost:8080/api/time
+Accept: text/plain
+
+###
+GET http://localhost:8080/api/time/json
+Accept: application/json
+
