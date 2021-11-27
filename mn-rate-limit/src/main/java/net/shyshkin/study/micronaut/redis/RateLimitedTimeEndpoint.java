@@ -6,6 +6,8 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Produces;
+import io.micronaut.scheduling.TaskExecutors;
+import io.micronaut.scheduling.annotation.ExecuteOn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,12 +27,14 @@ public class RateLimitedTimeEndpoint {
         this.redis = redis;
     }
 
+    @ExecuteOn(TaskExecutors.IO)
     @Get
     @Produces(MediaType.TEXT_PLAIN)
     public String time() {
         return getTime("EXAMPLE::TIME", LocalTime.now());
     }
 
+    @ExecuteOn(TaskExecutors.IO)
     @Get("/utc")
     @Produces(MediaType.TEXT_PLAIN)
     public String utc() {
