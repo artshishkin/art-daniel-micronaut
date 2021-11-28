@@ -1,6 +1,7 @@
 package net.shyshkin.study.micronaut.elasticsearch;
 
 import com.github.javafaker.Faker;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.scheduling.annotation.Scheduled;
 import jakarta.inject.Singleton;
 import org.elasticsearch.action.ActionListener;
@@ -22,6 +23,9 @@ public class TestDataProvider {
 
     private final RestHighLevelClient client;
 
+    @Property(name = "app.elasticsearch.index")
+    private String index;
+
     public TestDataProvider(RestHighLevelClient client) {
         this.client = client;
     }
@@ -37,7 +41,7 @@ public class TestDataProvider {
         log.debug("Trying to insert: {}", document);
 
         IndexRequest indexRequest = new IndexRequest()
-                .index("mn-es-idx")
+                .index(this.index)
                 .id(UUID.randomUUID().toString())
                 .source(document, XContentType.JSON);
 

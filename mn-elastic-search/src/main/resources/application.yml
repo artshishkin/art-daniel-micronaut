@@ -7,3 +7,6 @@ elasticsearch:
     default:
       connect-timeout: 1000
       socket-timeout: 10000
+app:
+  elasticsearch:
+    index: mn-es-idx
