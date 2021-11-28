@@ -2,3 +2,6 @@ GET http://localhost:8080/data/document/f41f85e1-6c1e-4acf-8eb6-ede83bdaa4fd
 Accept: application/json
 
 ###
+GET http://localhost:8080/data/document/async/f41f85e1-6c1e-4acf-8eb6-ede83bdaa4fd
+Accept: application/json
+
