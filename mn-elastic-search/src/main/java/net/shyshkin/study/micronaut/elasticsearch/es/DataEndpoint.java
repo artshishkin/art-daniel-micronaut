@@ -9,8 +9,13 @@ import io.micronaut.scheduling.annotation.ExecuteOn;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +23,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller("/data")
 public class DataEndpoint {
@@ -61,5 +68,37 @@ public class DataEndpoint {
         });
         return whenDone;
     }
+
+    @Get("/document/async/search/{firstname}")
+    public CompletableFuture<String> searchByFirstNameAsync(@PathVariable("firstname") String search) {
+        CompletableFuture<String> whenDone = new CompletableFuture<>();
+
+        String[] indices = {this.index};
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder
+                .searchSource()
+                .query(QueryBuilders.matchQuery("first_name", search));
+        SearchRequest searchRequest = new SearchRequest(indices, searchSourceBuilder);
+        client.searchAsync(searchRequest, RequestOptions.DEFAULT, new ActionListener<SearchResponse>() {
+            @Override
+            public void onResponse(SearchResponse searchResponse) {
+                var hits = searchResponse.getHits().getHits();
+                String source = Stream.of(hits)
+                        .map(SearchHit::getSourceAsString)
+                        .collect(Collectors.joining(","));
+                source = "[" + source + "]";
+                log.debug("Searching Document by firstname {}: {}", search, source);
+                whenDone.complete(source);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                log.error("Error while requesting document by firstname {}: {}", search, e.getMessage());
+                whenDone.completeExceptionally(e);
+            }
+        });
+
+        return whenDone;
+    }
+
 
 }
