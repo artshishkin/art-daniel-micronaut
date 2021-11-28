@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: net.shyshkin.study.micronaut.elasticsearch
+testFramework: junit
+sourceLanguage: java
+buildTool: gradle
+features: [annotation-api, app-name, elasticsearch, gradle, http-client, java, java-application, junit, logback, netty-server, reactor, reactor-http-client, readme, shade, yaml]
